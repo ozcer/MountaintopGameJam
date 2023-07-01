@@ -24,10 +24,6 @@ public class AnimationSelector : MonoBehaviour
         
         animator.SetBool("Charging", Input.GetKey(KeyCode.Space));
         
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            rb.AddForce(jumpForce, ForceMode2D.Impulse);
-        }
         
         animator.SetFloat("YSpeed", rb.velocity.y);
     }
