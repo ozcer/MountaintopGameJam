@@ -11,11 +11,11 @@ public class Player : MonoBehaviour
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
     private float dirX = 0.2f;
-    [SerializeField] private Vector2 moveForce;
     [SerializeField] private float moveSpeed = 7f;
+    private float airSpeed = 13f;
 
     [SerializeField]
-    private float m_MaxSpeed = 1f;
+    private float m_MaxSpeed = 20f;
     private bool m_MovingToHook = false;
 
     [SerializeField]
@@ -24,10 +24,18 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float m_retrieveHookDistance = 1f;
 
+    private Rigidbody2D rb;
+    public float speed = 10.0f;
+
+
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
+    }
+
+    private void Start() {
+        rb = this.GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -51,9 +59,6 @@ public class Player : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
-         dirX = Input.GetAxis("Horizontal");
-        moveForce = new Vector2(dirX, 0f);
-        m_Rigidbody.AddForce(moveForce,ForceMode2D.Impulse);
     }
 
     private void FixedUpdate()
@@ -72,6 +77,36 @@ public class Player : MonoBehaviour
                 m_CurrentHook = null;
             }
         }
+
+
+        // Control while on ground
+        if(!m_MovingToHook){
+
+            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
+            // Creates a new Vector2 where x is determined by 'A' or 'D' input
+            Vector2 movement = new Vector2(moveHorizontal, 0);
+
+            // Applies the movement to the Rigidbody2D
+            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+
+        }
+
+        //  Less control while in air
+        if(m_MovingToHook){
+        float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
+        // Creates a new Vector2 where x is determined by 'A' or 'D' input
+        Vector2 movement = new Vector2(moveHorizontal, 0);
+
+        // Applies the force to the Rigidbody2D
+        if(Mathf.Abs(rb.velocity.x) < 10) {
+            // Applies the force to the Rigidbody2D
+            rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+        }
+    }
+
+
     }
 
     private void LaunchGrapplingHook()
