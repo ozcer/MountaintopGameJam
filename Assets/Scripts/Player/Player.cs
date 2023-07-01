@@ -8,9 +8,6 @@ public class Player : MonoBehaviour
     private SpringJoint2D m_SpringJoint;
 
     [SerializeField]
-    private Rigidbody2D m_ConnectionPoint;
-
-    [SerializeField]
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
 
@@ -31,6 +28,27 @@ public class Player : MonoBehaviour
         {
             LaunchGrapplingHook();
         }
+
+        if (Input.GetMouseButton(1))
+        {
+            if (m_MovingToHook && m_CurrentHook != null)
+            {
+                m_SpringJoint.connectedBody = m_Rigidbody;
+                m_MovingToHook = false;
+
+                Destroy(m_CurrentHook);
+                m_CurrentHook = null;
+            }
+            else
+            {
+                Time.timeScale = 0.5f;
+            }
+        }
+
+        if (Input.GetMouseButtonUp(1))
+        {
+            Time.timeScale = 1f;
+        }
     }
 
     private void FixedUpdate()
@@ -39,8 +57,7 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < 1f)
             {
-                m_ConnectionPoint.gameObject.transform.position = m_CurrentHook.transform.position;
-                m_SpringJoint.connectedBody = m_ConnectionPoint;
+                m_SpringJoint.connectedBody = m_Rigidbody;
 
                 m_MovingToHook = false;
 
