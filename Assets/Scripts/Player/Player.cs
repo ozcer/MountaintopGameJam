@@ -5,14 +5,14 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D m_Rigidbody;
+    private SpringJoint2D m_SpringJoint;
+
+    [SerializeField]
+    private Rigidbody2D m_ConnectionPoint;
 
     [SerializeField]
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
-
-    [SerializeField]
-    private float m_PullPower = 10f;
-    private Vector2 m_PullVelocity;
 
     private bool m_MovingToHook = false;
 
@@ -22,11 +22,12 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_SpringJoint = GetComponent<SpringJoint2D>();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && m_CurrentHook == null)
         {
             LaunchGrapplingHook();
         }
@@ -36,11 +37,15 @@ public class Player : MonoBehaviour
     {
         if (m_MovingToHook)
         {
-            m_Rigidbody.velocity = m_PullVelocity;
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < 1f)
             {
+                m_ConnectionPoint.gameObject.transform.position = m_CurrentHook.transform.position;
+                m_SpringJoint.connectedBody = m_ConnectionPoint;
+
                 m_MovingToHook = false;
+
                 Destroy(m_CurrentHook);
+                m_CurrentHook = null;
             }
         }
     }
@@ -70,16 +75,7 @@ public class Player : MonoBehaviour
 
     public void MoveToHook(Vector2 targetPosition)
     {
-        Vector2 difference = targetPosition - (Vector2) transform.position;
-        float angle = Vector2.Angle(Vector2.up, difference);
-        angle = (targetPosition.x > transform.position.x) ? -angle : angle;
-
-        Vector2 unitVector = Vector2.up;
-        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-        Vector2 direction = rotation * unitVector;
-
-        m_PullVelocity = direction * m_PullPower;
-
+        m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
         m_MovingToHook = true;
     }
 }
