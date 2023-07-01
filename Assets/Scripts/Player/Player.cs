@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
 
+    [SerializeField]
+    private float m_MaxSpeed = 1f;
     private bool m_MovingToHook = false;
 
     [SerializeField]
@@ -24,28 +26,22 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && m_CurrentHook == null)
+        if (Input.GetMouseButtonDown(0))
         {
-            LaunchGrapplingHook();
+            if (m_CurrentHook == null)
+            {
+                LaunchGrapplingHook();
+            }
+            else
+            {
+                DestroyGrapplingHook();
+            }
         }
 
         if (Input.GetMouseButton(1))
         {
-            if (m_MovingToHook && m_CurrentHook != null)
-            {
-                m_SpringJoint.connectedBody = m_Rigidbody;
-                m_MovingToHook = false;
-
-                Destroy(m_CurrentHook);
-                m_CurrentHook = null;
-            }
-            else
-            {
-                Time.timeScale = 0.5f;
-            }
-        }
-
-        if (Input.GetMouseButtonUp(1))
+            Time.timeScale = 0.5f;
+        } else if (Input.GetMouseButtonUp(1))
         {
             Time.timeScale = 1f;
         }
@@ -53,6 +49,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        m_Rigidbody.velocity = Vector2.ClampMagnitude(m_Rigidbody.velocity, m_MaxSpeed);
+
         if (m_MovingToHook)
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < 1f)
@@ -88,6 +86,15 @@ public class Player : MonoBehaviour
         hook.Launch(fireVector, m_LaunchPower);
 
         m_CurrentHook = hookObject;
+    }
+
+    private void DestroyGrapplingHook()
+    {
+        m_SpringJoint.connectedBody = m_Rigidbody;
+        m_MovingToHook = false;
+
+        Destroy(m_CurrentHook);
+        m_CurrentHook = null;
     }
 
     public void MoveToHook(Vector2 targetPosition)
