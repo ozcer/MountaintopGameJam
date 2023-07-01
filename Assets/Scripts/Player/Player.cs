@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float m_LaunchPower = 30f;
+    
+    [SerializeField]
+    private float m_retrieveHookDistance = 1f;
 
     private void Awake()
     {
@@ -59,7 +62,7 @@ public class Player : MonoBehaviour
 
         if (m_MovingToHook)
         {
-            if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < 1f)
+            if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
                 m_SpringJoint.connectedBody = m_Rigidbody;
 

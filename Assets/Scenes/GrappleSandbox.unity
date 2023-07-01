@@ -1028,6 +1028,18 @@ PrefabInstance:
       propertyPath: m_Frequency
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_MaxSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_LaunchPower
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_retrieveHookDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9004510868027019629, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_Name
       value: Player
