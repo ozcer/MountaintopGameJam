@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
+    private float dirX = 0.2f;
+    [SerializeField] private Vector2 moveForce;
+    [SerializeField] private float moveSpeed = 7f;
 
     [SerializeField]
     private float m_MaxSpeed = 1f;
@@ -45,6 +48,9 @@ public class Player : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
+         dirX = Input.GetAxis("Horizontal");
+        moveForce = new Vector2(dirX, 0f);
+        m_Rigidbody.AddForce(moveForce,ForceMode2D.Impulse);
     }
 
     private void FixedUpdate()
