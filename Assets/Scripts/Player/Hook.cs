@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,16 @@ public class Hook : MonoBehaviour
     public Player Player;
 
     private Rigidbody2D m_Rigidbody;
+    public LineRenderer m_LineRenderer;
+
+    void Update()
+    {
+        if (Player != null)
+        {
+            m_LineRenderer.SetPosition(0, transform.position);
+            m_LineRenderer.SetPosition(1, Player.transform.position);
+        }
+    }
 
     private void Awake()
     {
