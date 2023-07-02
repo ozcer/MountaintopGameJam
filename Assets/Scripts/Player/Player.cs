@@ -54,6 +54,14 @@ public class Player : MonoBehaviour
     private bool left;
 
     private Vector3 originalPosition;
+
+    [SerializeField]
+    private FeatherParticles m_FeatherParticles;
+
+    [SerializeField]
+    private GameObject m_SmokeParticlesPrefab;
+    private int m_FramesBetweenSmoke = 10;
+    private int m_SmokeFramesRemaining = 10;
     
     private void Awake()
     {
@@ -148,9 +156,25 @@ public class Player : MonoBehaviour
             }
             
             // Control while on ground
-            if(grounded){
+            if(grounded) {
                 // Creates a new Vector2 where x is determined by 'A' or 'D' input
                 rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+
+                if (moveHorizontal != 0)
+                {
+                    m_SmokeFramesRemaining -= 1;
+                    if (m_SmokeFramesRemaining <= 0)
+                    {
+                        if (m_SmokeParticlesPrefab != null)
+                            Instantiate(
+                                m_SmokeParticlesPrefab,
+                                new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                                Quaternion.identity
+                            );
+
+                        m_SmokeFramesRemaining = m_FramesBetweenSmoke;
+                    }
+                }
             }
             
             //  Less control while in air
@@ -267,6 +291,11 @@ public class Player : MonoBehaviour
 
         if (Input.GetButton("Jump") && !glideDepleted)
         {
+            if (m_FeatherParticles != null)
+            {
+                m_FeatherParticles.StartParticleSystem();
+            }
+
             m_Animator.SetBool("Gliding", true);
             if (rb.velocity.y < -1)
             {
@@ -286,6 +315,11 @@ public class Player : MonoBehaviour
         }
         else
         {
+            if (m_FeatherParticles != null)
+            {
+                m_FeatherParticles.StopParticleSystem();
+            }
+
             m_Animator.SetBool("Gliding", false);
             if (glideFramesRemaining < maxGlideFrames)
             {
