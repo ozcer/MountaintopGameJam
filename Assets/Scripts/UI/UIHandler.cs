@@ -57,6 +57,6 @@ public class UIHandler : MonoBehaviour
     {
         distance = playerObject.transform.position.y - startHeight;
         if (distance < 0f) distance = 0f;
-        distanceText.text = "Current Height: " + distance.ToString("F2") + "m";
+        distanceText.text = "Current Height: " + distance.ToString("F0") + "m";
     }
 }
