@@ -136,7 +136,7 @@ public class Player : MonoBehaviour
 
 
         
-        if(!softlockCheckCoroutineRunning)
+        if(!softlockCheckCoroutineRunning && !wallClimb)
         {
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
@@ -233,6 +233,7 @@ public class Player : MonoBehaviour
 
         softlocked = false;
         softlockCheckCoroutineRunning = false;
+        touchingHook = false;
     }
 
     private void FaceMouse()
