@@ -10,6 +10,8 @@ public class Hook : MonoBehaviour
     private Rigidbody2D m_Rigidbody;
     public LineRenderer m_LineRenderer;
 
+    private bool m_CanRecall = false;
+
     void Update()
     {
         if (Player != null)
@@ -27,6 +29,12 @@ public class Hook : MonoBehaviour
     public void Launch(Vector2 direction, float power)
     {
         m_Rigidbody.AddForce(direction * power, ForceMode2D.Impulse);
+        StartCoroutine(RecallCheckCoroutine());
+    }
+
+    public bool CanRecall()
+    {
+        return m_CanRecall;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -43,6 +51,21 @@ public class Hook : MonoBehaviour
         if (Player != null)
         {
             Player.MoveToHook((Vector2) transform.position);
+        }
+    }
+
+    private IEnumerator RecallCheckCoroutine()
+    {
+        while (!m_CanRecall)
+        {
+            float initialYValue = transform.position.y;
+            yield return new WaitForSeconds(1);
+            float finalYValue = transform.position.y;
+
+            if (Mathf.Abs(finalYValue - initialYValue) < 0.5f)
+            {
+                m_CanRecall = true;
+            }
         }
     }
 }

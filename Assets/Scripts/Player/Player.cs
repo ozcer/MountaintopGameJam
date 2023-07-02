@@ -41,6 +41,10 @@ public class Player : MonoBehaviour
     [Header("UI")]
     public GameObject canvasObject;
     public ChargeBar chargeBar;
+
+    [Header("Recall")]
+    public bool canRecall = false;
+    public bool recallCoroutineRunning = false;
     
     private void Awake()
     {
@@ -64,7 +68,8 @@ public class Player : MonoBehaviour
             }
             else
             {
-                DestroyGrapplingHook();
+                // Check to see if hook can be recalled
+                RecallLogic();
             }
             launchPower = launchPowerMin;
         }
@@ -81,31 +86,29 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                m_SpringJoint.connectedBody = rb;
-
-                m_MovingToHook = false;
-
-                Destroy(m_CurrentHook);
-                m_CurrentHook = null;
+                DestroyGrapplingHook();
             }
         }
         
         bool mouseDown = Input.GetMouseButton(0);
-        animator.SetBool("Charging", mouseDown);
-        if (mouseDown)
+        if (m_CurrentHook == null)
         {
-            if (!canvasObject.activeSelf)
+            animator.SetBool("Charging", mouseDown);
+            if (mouseDown)
             {
-                canvasObject.SetActive(true);
-            }
+                if (!canvasObject.activeSelf)
+                {
+                    canvasObject.SetActive(true);
+                }
 
 
-            if (launchPower < launchPowerMax)
-            {
-                launchPower += launchPowerIncrement;
+                if (launchPower < launchPowerMax)
+                {
+                    launchPower += launchPowerIncrement;
 
-                float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
-                chargeBar.SetValue(chargePercent);
+                    float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+                    chargeBar.SetValue(chargePercent);
+                }
             }
         }
         
@@ -158,10 +161,14 @@ public class Player : MonoBehaviour
         hook.Launch(fireVector, power);
 
         m_CurrentHook = hookObject;
+        GameManager.Instance.ChangeCameraTarget(hookObject.transform);
     }
 
     private void DestroyGrapplingHook()
     {
+        GameManager.Instance.ResetTargets();
+        GameManager.Instance.ChangeCameraTarget(transform);
+
         m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
@@ -208,9 +215,54 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void RecallLogic()
+    {
+        if (m_MovingToHook)
+        {
+            if (canRecall)
+            {
+                recallCoroutineRunning = false;
+                DestroyGrapplingHook();
+            }
+        }
+        else
+        {
+            Hook hook = m_CurrentHook.GetComponent<Hook>();
+            if (hook.CanRecall())
+            {
+                DestroyGrapplingHook();
+            }
+        }
+    }
+
     public void MoveToHook(Vector2 targetPosition)
     {
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
         m_MovingToHook = true;
+
+        recallCoroutineRunning = true;
+        canRecall = false;
+        StartCoroutine(RecallCheckCoroutine());
+
+        GameManager.Instance.ResetAndAddTargets(new Transform[] { transform, m_CurrentHook.transform });
+    }
+
+    private IEnumerator RecallCheckCoroutine()
+    {
+        while (!canRecall && recallCoroutineRunning)
+        {
+            Vector2 initialPosition = transform.position;
+            yield return new WaitForSeconds(1);
+            if (recallCoroutineRunning)
+            {
+                Vector2 finalPosition = transform.position;
+
+                float distance = Vector2.Distance(initialPosition, finalPosition);
+                if (distance < 0.5f)
+                {
+                    canRecall = true;
+                }
+            }
+        }
     }
 }
