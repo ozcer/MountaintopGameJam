@@ -6,20 +6,23 @@ using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
-    //bullet time
+    [Header("Bullet Time")]
     [SerializeField] private Image bulletTime;
     public float bulletTimeAmount = 100f, drainSpeed = 1f, refillSpeed = 0.5f;
 
-    //timer
+    [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
     private float timer, hours, minutes, seconds;
 
-    //distance travelled
+    [Header("Distance Traveled")]
+    [SerializeField] private TextMeshProUGUI distanceText;
+    [SerializeField] private GameObject player;
+    private float distance, startHeight;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        startHeight = player.transform.position.y;
     }
 
     // Update is called once per frame
@@ -28,8 +31,11 @@ public class UIHandler : MonoBehaviour
         //timer 
         setTimerText();
 
+        //distance
+        setDistanceText();
+
         //bullet time
-        if (Input.GetMouseButton(1)) useBulletTime();
+        if (Input.GetKeyDown(KeyCode.Space)) useBulletTime();
         else refillBulletTime();
     }
 
@@ -57,5 +63,12 @@ public class UIHandler : MonoBehaviour
             timerText.text = "Time Elapsed: " + minutes.ToString("00") + ":" + seconds.ToString("00");
         else 
             timerText.text = "Time Elapsed: " + hours.ToString("00") + ":" + minutes.ToString("00") + ":" + seconds.ToString("00");
+    }
+
+    private void setDistanceText()
+    {
+        distance = player.transform.position.y - startHeight;
+        if (distance < 0f) distance = 0f;
+        distanceText.text = "Current Height: " + distance.ToString("F2") + "m";
     }
 }
