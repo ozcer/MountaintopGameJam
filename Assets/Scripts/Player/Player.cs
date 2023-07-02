@@ -149,14 +149,11 @@ public class Player : MonoBehaviour
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
 
-            
-
-
             // Applies the force to the Rigidbody2D
-            if(Mathf.Abs(rb.velocity.x) < 10) {
+            // if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
                 rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-            }
+            // }
             
             // Control while on ground
             if(grounded) {
