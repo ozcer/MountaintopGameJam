@@ -9,7 +9,7 @@ public class DeathBall : MonoBehaviour
         if (collider.gameObject.CompareTag("Player"))
         {
             Player player = collider.gameObject.GetComponent<Player>();
-            player.Kill();
+            // player.Kill();
         }
     }
 }

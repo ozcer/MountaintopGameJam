@@ -5,9 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Animator animator;
-    
     private Rigidbody2D rb;
     private SpringJoint2D m_SpringJoint;
+    private SpriteRenderer m_SpriteRenderer;
     
     [SerializeField]
     private GameObject m_HookPrefab;
@@ -32,11 +32,23 @@ public class Player : MonoBehaviour
     public float launchPowerMax = 50f;
     public float launchPowerIncrement = 1f;
     public float launchPower = 0f;
+
+    [Header("Gliding")]
+    public int maxGlideFrames = 1200;
+    public int glideFramesRemaining;
+    public bool glideDepleted = false;
+
+    [Header("UI")]
+    public GameObject canvasObject;
+    public ChargeBar chargeBar;
     
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        glideFramesRemaining = maxGlideFrames;
     }
 
     private void Update()
@@ -47,15 +59,18 @@ public class Player : MonoBehaviour
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
                 launchPower = launchPowerMin;
+
+                canvasObject.SetActive(false);
             }
             else
             {
                 DestroyGrapplingHook();
             }
+            launchPower = launchPowerMin;
         }
         
-        // Bullet time
-        Time.timeScale = Input.GetButton("Jump") ? 0.5f : 1f;
+        FaceMouse();
+        GlideLogic();
     }
 
     private void FixedUpdate()
@@ -66,7 +81,7 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                // m_SpringJoint.connectedBody = rb;
+                m_SpringJoint.connectedBody = rb;
 
                 m_MovingToHook = false;
 
@@ -79,10 +94,18 @@ public class Player : MonoBehaviour
         animator.SetBool("Charging", mouseDown);
         if (mouseDown)
         {
-            
+            if (!canvasObject.activeSelf)
+            {
+                canvasObject.SetActive(true);
+            }
+
+
             if (launchPower < launchPowerMax)
             {
                 launchPower += launchPowerIncrement;
+
+                float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+                chargeBar.SetValue(chargePercent);
             }
         }
         
@@ -139,21 +162,55 @@ public class Player : MonoBehaviour
 
     private void DestroyGrapplingHook()
     {
-        // m_SpringJoint.connectedBody = rb;
+        m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
         Destroy(m_CurrentHook);
         m_CurrentHook = null;
     }
 
+    private void FaceMouse()
+    {
+        Vector2 mousePositionInWorld = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        m_SpriteRenderer.flipX = (mousePositionInWorld.x < transform.position.x);
+    }
+
+    private void GlideLogic()
+    {
+        if (m_MovingToHook)
+        {
+            return;
+        }
+
+        if (Input.GetButton("Jump") && !glideDepleted)
+        {
+            if (rb.velocity.y < -1)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, -1);
+            }
+
+            glideFramesRemaining -= 1;
+            if (glideFramesRemaining <= 0)
+            {
+                glideDepleted = true;
+            }    
+        }
+        else
+        {
+            if (glideFramesRemaining < maxGlideFrames)
+            {
+                glideFramesRemaining += 1;
+                if (glideFramesRemaining >= maxGlideFrames)
+                {
+                    glideDepleted = false;
+                }
+            }
+        }
+    }
+
     public void MoveToHook(Vector2 targetPosition)
     {
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
         m_MovingToHook = true;
-    }
-
-    public void Kill()
-    {
-        Debug.Log("I am dead!!!");
     }
 }
