@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
     public bool touchingHook = false;
     
     private bool wallClimb = false;
-    private bool grounded = true;
+    private bool grounded = false;
     private bool left;
 
     private Vector3 originalPosition;
@@ -222,7 +222,7 @@ public class Player : MonoBehaviour
 
     private void DestroyGrapplingHook()
     {
-        GameManager.Instance.ResetTargets();
+        GameManager.Instance.ChangeCameraTarget(transform);
 
         m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
