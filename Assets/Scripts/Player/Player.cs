@@ -49,6 +49,8 @@ public class Player : MonoBehaviour
     private bool wallClimb = false;
     private bool grounded = true;
     private bool left;
+
+    private Vector3 originalPosition;
     
     private void Awake()
     {
@@ -57,7 +59,7 @@ public class Player : MonoBehaviour
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
 
         glideFramesRemaining = maxGlideFrames;
-        new Vector3 = transform.position;
+        originalPosition = transform.position;
     }
 
     private void Update()
