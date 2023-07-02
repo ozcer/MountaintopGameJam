@@ -20,7 +20,7 @@ public class AnimationSelector : MonoBehaviour
             Vector3.down, 
             raycastDistance, 
             groundLayer);
-
+        // print(isOnGround);
         animator.SetBool("Airborne", !isOnGround);
         animator.SetFloat("YSpeed", rb.velocity.y);
         if(rb.velocity.x > 0) {
