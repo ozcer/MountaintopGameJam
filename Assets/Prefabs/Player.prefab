@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 4289283505365203686}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,11 +103,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HookPrefab: {fileID: 6260268016498765296, guid: 10bd883e2e237924abd8a2be80a4a8f3, type: 3}
-  moveForce: {x: 0, y: 0}
   moveSpeed: 7
   m_MaxSpeed: 10
   m_LaunchPower: 30
   m_retrieveHookDistance: 2
+  speed: 10
 --- !u!50 &3133022157655639566
 Rigidbody2D:
   serializedVersion: 4
