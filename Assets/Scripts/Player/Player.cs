@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     public Animator animator;
     
-    private Rigidbody2D m_Rigidbody;
+    private Rigidbody2D rb;
     private SpringJoint2D m_SpringJoint;
     
     [SerializeField]
@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private float dirX = 0.2f;
     [SerializeField] private float moveSpeed = 7f;
     private float airSpeed = 13f;
+    public float speed = 10.0f;
 
     [SerializeField]
     private float m_MaxSpeed = 20f;
@@ -34,12 +35,8 @@ public class Player : MonoBehaviour
     
     private void Awake()
     {
-        m_Rigidbody = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
-    }
-
-    private void Start() {
-        rb = this.GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -59,22 +56,17 @@ public class Player : MonoBehaviour
         
         // Bullet time
         Time.timeScale = Input.GetButton("Jump") ? 0.5f : 1f;
-        
-        // Walking movement
-        dirX = Input.GetAxis("Horizontal");
-        moveForce = new Vector2(dirX, 0f);
-        m_Rigidbody.AddForce(moveForce,ForceMode2D.Impulse);
     }
 
     private void FixedUpdate()
     {
-        m_Rigidbody.velocity = Vector2.ClampMagnitude(m_Rigidbody.velocity, m_MaxSpeed);
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, m_MaxSpeed);
 
         if (m_MovingToHook)
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                m_SpringJoint.connectedBody = m_Rigidbody;
+                m_SpringJoint.connectedBody = rb;
 
                 m_MovingToHook = false;
 
@@ -91,6 +83,33 @@ public class Player : MonoBehaviour
             if (launchPower < launchPowerMax)
             {
                 launchPower += launchPowerIncrement;
+            }
+        }
+        
+        // Control while on ground
+        if(!m_MovingToHook){
+
+            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
+            // Creates a new Vector2 where x is determined by 'A' or 'D' input
+            Vector2 movement = new Vector2(moveHorizontal, 0);
+
+            // Applies the movement to the Rigidbody2D
+            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+
+        }
+
+        //  Less control while in air
+        if(m_MovingToHook){
+            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
+            // Creates a new Vector2 where x is determined by 'A' or 'D' input
+            Vector2 movement = new Vector2(moveHorizontal, 0);
+
+            // Applies the force to the Rigidbody2D
+            if(Mathf.Abs(rb.velocity.x) < 10) {
+                // Applies the force to the Rigidbody2D
+                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
             }
         }
     }
@@ -120,7 +139,7 @@ public class Player : MonoBehaviour
 
     private void DestroyGrapplingHook()
     {
-        m_SpringJoint.connectedBody = m_Rigidbody;
+        m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
         Destroy(m_CurrentHook);
