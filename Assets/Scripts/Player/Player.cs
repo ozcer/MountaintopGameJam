@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     public ChargeBar chargeBar;
     
     private bool wallClimb = false;
+    private bool grounded = true;
     private bool left;
     
     private void Awake()
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
 
         glideFramesRemaining = maxGlideFrames;
+        new Vector3 = transform.position;
     }
 
     private void Update()
@@ -69,6 +71,11 @@ public class Player : MonoBehaviour
                 DestroyGrapplingHook();
             }
             launchPower = launchPowerMin;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = originalPosition;
         }
         
         FaceMouse();
@@ -114,7 +121,7 @@ public class Player : MonoBehaviour
         
         // Control while on ground
         if(!m_MovingToHook){
-            if(!wallClimb){
+            if(!wallClimb || grounded){
                 float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
                 // Creates a new Vector2 where x is determined by 'A' or 'D' input
@@ -147,6 +154,11 @@ public class Player : MonoBehaviour
         {
             wallClimb = true;
         }
+        
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            grounded = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -154,6 +166,11 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             wallClimb = false;
+        }
+        
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            grounded = false;
         }
     }
 
