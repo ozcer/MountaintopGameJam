@@ -50,7 +50,7 @@ public class Hook : MonoBehaviour
         m_Rigidbody.bodyType = RigidbodyType2D.Static;
         if (Player != null)
         {
-            Player.AttachHook();
+            Player.MoveToHook();
         }
     }
 

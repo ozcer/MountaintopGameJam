@@ -19,7 +19,6 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float m_MaxSpeed = 20f;
-    private bool m_HookAttachedAndWaiting = false;
     private bool m_MovingToHook = false;
 
     [SerializeField]
@@ -43,9 +42,8 @@ public class Player : MonoBehaviour
     public GameObject canvasObject;
     public ChargeBar chargeBar;
 
-    [Header("Recall")]
-    public bool canRecall = false;
-    public bool recallCoroutineRunning = false;
+    [Header("Recall Logic")]
+    public bool touchingHook = false;
     
     private void Awake()
     {
@@ -69,14 +67,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (m_HookAttachedAndWaiting)
-                {
-                    MoveToHook();
-                }
-                else
-                {
-                    RecallLogic();
-                }
+                RecallLogic();
             }
             launchPower = launchPowerMin;
         }
@@ -93,7 +84,7 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                DestroyGrapplingHook();
+                touchingHook = true;
             }
         }
         
@@ -174,7 +165,6 @@ public class Player : MonoBehaviour
     private void DestroyGrapplingHook()
     {
         GameManager.Instance.ResetTargets();
-        GameManager.Instance.ChangeCameraTarget(transform);
 
         m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
@@ -226,10 +216,16 @@ public class Player : MonoBehaviour
     {
         if (m_MovingToHook)
         {
-            if (canRecall)
+            if (touchingHook)
             {
-                recallCoroutineRunning = false;
                 DestroyGrapplingHook();
+            }
+            else
+            {
+                if (m_CurrentHook.transform.position.y >= transform.position.y)
+                {
+                    DestroyGrapplingHook();
+                }
             }
         }
         else
@@ -242,45 +238,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void AttachHook()
-    {
-        GameManager.Instance.ResetAndAddTargets(new Transform[] { transform, m_CurrentHook.transform });
-
-        m_SpringJoint.autoConfigureDistance = true;
-        m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
-
-        m_HookAttachedAndWaiting = true;
-    }
-
     public void MoveToHook()
     {
-        m_SpringJoint.autoConfigureDistance = false;
-        m_SpringJoint.distance = 0.005f;
+        GameManager.Instance.ChangeCameraTarget(transform);
+        m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
 
         m_MovingToHook = true;
-        m_HookAttachedAndWaiting = false;
-
-        recallCoroutineRunning = true;
-        canRecall = false;
-        StartCoroutine(RecallCheckCoroutine());
-    }
-
-    private IEnumerator RecallCheckCoroutine()
-    {
-        while (!canRecall && recallCoroutineRunning)
-        {
-            Vector2 initialPosition = transform.position;
-            yield return new WaitForSeconds(1);
-            if (recallCoroutineRunning)
-            {
-                Vector2 finalPosition = transform.position;
-
-                float distance = Vector2.Distance(initialPosition, finalPosition);
-                if (distance < 0.5f)
-                {
-                    canRecall = true;
-                }
-            }
-        }
     }
 }
