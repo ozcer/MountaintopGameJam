@@ -11,6 +11,7 @@ public class AnimationSelector : MonoBehaviour
     public Vector2 jumpForce = new Vector2(0, 10); 
     public float raycastDistance = 0.1f;
     public LayerMask groundLayer;
+    public bool left;
     
     // Update is called once per frame
     void Update()
@@ -23,11 +24,7 @@ public class AnimationSelector : MonoBehaviour
         // print(isOnGround);
         animator.SetBool("Airborne", !isOnGround);
         animator.SetFloat("YSpeed", rb.velocity.y);
-        if(rb.velocity.x > 0) {
-        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        } else if(rb.velocity.x < 0) {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
+        
 
     }
 

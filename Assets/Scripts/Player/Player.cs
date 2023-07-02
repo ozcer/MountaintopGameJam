@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private SpringJoint2D m_SpringJoint;
     private SpriteRenderer m_SpriteRenderer;
+    public AnimationSelector animationSelector;
     
     [SerializeField]
     private GameObject m_HookPrefab;
@@ -45,6 +46,10 @@ public class Player : MonoBehaviour
     [Header("Recall Logic")]
     public bool touchingHook = false;
     
+    private bool wallClimb = false;
+    private bool grounded = true;
+    private bool left;
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -52,17 +57,16 @@ public class Player : MonoBehaviour
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
 
         glideFramesRemaining = maxGlideFrames;
+        new Vector3 = transform.position;
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
-            if (m_CurrentHook == null)
+            if (m_CurrentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-                launchPower = launchPowerMin;
-
                 canvasObject.SetActive(false);
             }
             else
@@ -71,8 +75,14 @@ public class Player : MonoBehaviour
             }
             launchPower = launchPowerMin;
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = originalPosition;
+        }
         
         FaceMouse();
+        
         GlideLogic();
     }
 
@@ -112,14 +122,15 @@ public class Player : MonoBehaviour
         
         // Control while on ground
         if(!m_MovingToHook){
+            if(!wallClimb || grounded){
+                float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
-            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+                // Creates a new Vector2 where x is determined by 'A' or 'D' input
+                Vector2 movement = new Vector2(moveHorizontal, 0);
 
-            // Creates a new Vector2 where x is determined by 'A' or 'D' input
-            Vector2 movement = new Vector2(moveHorizontal, 0);
-
-            // Applies the movement to the Rigidbody2D
-            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+                // Applies the movement to the Rigidbody2D
+                rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+            }
 
         }
 
@@ -137,6 +148,34 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            wallClimb = true;
+        }
+        
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            wallClimb = false;
+        }
+        
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            grounded = false;
+        }
+    }
+
+
 
     private void LaunchGrapplingHook(float power)
     {
@@ -175,8 +214,24 @@ public class Player : MonoBehaviour
 
     private void FaceMouse()
     {
-        Vector2 mousePositionInWorld = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        m_SpriteRenderer.flipX = (mousePositionInWorld.x < transform.position.x);
+        Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if(rb.velocity.x > 0) {
+            m_SpriteRenderer.flipX = false;
+        } 
+        if(rb.velocity.x < 0) {
+            m_SpriteRenderer.flipX = true;
+        }
+
+
+        if(Input.GetMouseButton(0)){
+            if (mousePositionInWorld.x < transform.position.x){
+                m_SpriteRenderer.flipX = true;
+            }
+            else if (mousePositionInWorld.x > transform.position.x){
+                m_SpriteRenderer.flipX = false;
+            }
+        }
     }
 
     private void GlideLogic()
