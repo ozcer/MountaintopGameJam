@@ -11,6 +11,7 @@ public class Hook : MonoBehaviour
     public LineRenderer m_LineRenderer;
 
     private bool m_CanRecall = false;
+    private Color lineColor;
 
     void Update()
     {
@@ -18,7 +19,17 @@ public class Hook : MonoBehaviour
         {
             m_LineRenderer.SetPosition(0, transform.position);
             m_LineRenderer.SetPosition(1, Player.transform.position);
+
+            
+            m_LineRenderer.startWidth = .2f;
+            m_LineRenderer.endWidth = .2f;
+            lineColor = new Color(0.7f, 0.4f, 0.2f);
+
+            m_LineRenderer.startColor = lineColor;
+            m_LineRenderer.endColor = lineColor;
+
         }
+
     }
 
     private void Awake()
