@@ -42,10 +42,15 @@ public class Player : MonoBehaviour
     [Header("UI")]
     public GameObject canvasObject;
     public ChargeBar chargeBar;
+
+    [Header("Recall Logic")]
+    public bool touchingHook = false;
     
     private bool wallClimb = false;
     private bool grounded = true;
     private bool left;
+
+    private Vector3 originalPosition;
     
     private void Awake()
     {
@@ -54,7 +59,7 @@ public class Player : MonoBehaviour
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
 
         glideFramesRemaining = maxGlideFrames;
-        new Vector3 = transform.position;
+        originalPosition = transform.position;
     }
 
     private void Update()
@@ -68,7 +73,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                DestroyGrapplingHook();
+                RecallLogic();
             }
             launchPower = launchPowerMin;
         }
@@ -91,31 +96,29 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                m_SpringJoint.connectedBody = rb;
-
-                m_MovingToHook = false;
-
-                Destroy(m_CurrentHook);
-                m_CurrentHook = null;
+                touchingHook = true;
             }
         }
         
         bool mouseDown = Input.GetMouseButton(0);
-        animator.SetBool("Charging", mouseDown);
-        if (mouseDown)
+        if (m_CurrentHook == null)
         {
-            if (!canvasObject.activeSelf)
+            animator.SetBool("Charging", mouseDown);
+            if (mouseDown)
             {
-                canvasObject.SetActive(true);
-            }
+                if (!canvasObject.activeSelf)
+                {
+                    canvasObject.SetActive(true);
+                }
 
 
-            if (launchPower < launchPowerMax)
-            {
-                launchPower += launchPowerIncrement;
+                if (launchPower < launchPowerMax)
+                {
+                    launchPower += launchPowerIncrement;
 
-                float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
-                chargeBar.SetValue(chargePercent);
+                    float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+                    chargeBar.SetValue(chargePercent);
+                }
             }
         }
         
@@ -197,10 +200,13 @@ public class Player : MonoBehaviour
         hook.Launch(fireVector, power);
 
         m_CurrentHook = hookObject;
+        GameManager.Instance.ChangeCameraTarget(hookObject.transform);
     }
 
     private void DestroyGrapplingHook()
     {
+        GameManager.Instance.ResetTargets();
+
         m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
@@ -263,9 +269,37 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveToHook(Vector2 targetPosition)
+    private void RecallLogic()
     {
+        if (m_MovingToHook)
+        {
+            if (touchingHook)
+            {
+                DestroyGrapplingHook();
+            }
+            else
+            {
+                if (m_CurrentHook.transform.position.y >= transform.position.y)
+                {
+                    DestroyGrapplingHook();
+                }
+            }
+        }
+        else
+        {
+            Hook hook = m_CurrentHook.GetComponent<Hook>();
+            if (hook.CanRecall())
+            {
+                DestroyGrapplingHook();
+            }
+        }
+    }
+
+    public void MoveToHook()
+    {
+        GameManager.Instance.ChangeCameraTarget(transform);
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
+
         m_MovingToHook = true;
     }
 }
