@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     public int maxGlideFrames = 1200;
     public int glideFramesRemaining;
     public bool glideDepleted = false;
+    public bool gliding = false;
 
     [Header("UI")]
     public GameObject canvasObject;
@@ -250,6 +251,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetButton("Jump") && !glideDepleted)
         {
+            gliding = true;
             if (rb.velocity.y < -1)
             {
                 rb.velocity = new Vector2(rb.velocity.x, -1);
@@ -263,6 +265,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            gliding = false;
             if (glideFramesRemaining < maxGlideFrames)
             {
                 glideFramesRemaining += 1;
