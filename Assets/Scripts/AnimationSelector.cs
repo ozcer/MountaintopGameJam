@@ -13,9 +13,19 @@ public class AnimationSelector : MonoBehaviour
     public LayerMask groundLayer;
     public bool left;
     
+    public bool useYSpeedBelowZeroOverride = false;
+    public bool ySpeedBelowZeroOverride = false;
+    
     void Update()
     {
-        animator.SetBool("YSpeedBelowZero", rb.velocity.y < 0);
+        if (useYSpeedBelowZeroOverride)
+        {
+            animator.SetBool("YSpeedBelowZero", ySpeedBelowZeroOverride);
+        }
+        else
+        {
+            animator.SetBool("YSpeedBelowZero", rb.velocity.y < 0);
+        }
         animator.SetBool("XSpeedNonZero", rb.velocity.x != 0);
     }
 

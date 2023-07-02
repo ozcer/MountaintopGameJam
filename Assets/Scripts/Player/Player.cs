@@ -55,6 +55,9 @@ public class Player : MonoBehaviour
 
     private Vector3 originalPosition;
     
+    public bool useGlideOverride = false;
+    public bool glideOverride = false;
+    
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
@@ -92,6 +95,11 @@ public class Player : MonoBehaviour
         FaceMouse();
         
         GlideLogic();
+
+        if (useGlideOverride)
+        {
+            m_Animator.SetBool("Gliding", glideOverride);
+        }
     }
 
     private void FixedUpdate()
