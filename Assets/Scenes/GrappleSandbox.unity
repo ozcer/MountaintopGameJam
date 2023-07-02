@@ -1158,6 +1158,10 @@ PrefabInstance:
       propertyPath: m_Frequency
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 5442580846178339151, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_AutoConfigureDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: animator
       value: 

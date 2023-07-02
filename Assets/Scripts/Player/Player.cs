@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float m_MaxSpeed = 20f;
+    private bool m_HookAttachedAndWaiting = false;
     private bool m_MovingToHook = false;
 
     [SerializeField]
@@ -68,8 +69,14 @@ public class Player : MonoBehaviour
             }
             else
             {
-                // Check to see if hook can be recalled
-                RecallLogic();
+                if (m_HookAttachedAndWaiting)
+                {
+                    MoveToHook();
+                }
+                else
+                {
+                    RecallLogic();
+                }
             }
             launchPower = launchPowerMin;
         }
@@ -235,16 +242,27 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MoveToHook(Vector2 targetPosition)
+    public void AttachHook()
     {
+        GameManager.Instance.ResetAndAddTargets(new Transform[] { transform, m_CurrentHook.transform });
+
+        m_SpringJoint.autoConfigureDistance = true;
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
+
+        m_HookAttachedAndWaiting = true;
+    }
+
+    public void MoveToHook()
+    {
+        m_SpringJoint.autoConfigureDistance = false;
+        m_SpringJoint.distance = 0.005f;
+
         m_MovingToHook = true;
+        m_HookAttachedAndWaiting = false;
 
         recallCoroutineRunning = true;
         canRecall = false;
         StartCoroutine(RecallCheckCoroutine());
-
-        GameManager.Instance.ResetAndAddTargets(new Transform[] { transform, m_CurrentHook.transform });
     }
 
     private IEnumerator RecallCheckCoroutine()
