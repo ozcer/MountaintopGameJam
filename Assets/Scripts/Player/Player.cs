@@ -42,6 +42,8 @@ public class Player : MonoBehaviour
     public GameObject canvasObject;
     public ChargeBar chargeBar;
     
+    private bool wallClimb = false;
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -58,8 +60,6 @@ public class Player : MonoBehaviour
             if (m_CurrentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-                launchPower = launchPowerMin;
-
                 canvasObject.SetActive(false);
             }
             else
@@ -111,14 +111,15 @@ public class Player : MonoBehaviour
         
         // Control while on ground
         if(!m_MovingToHook){
+            if(!wallClimb){
+                float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
-            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+                // Creates a new Vector2 where x is determined by 'A' or 'D' input
+                Vector2 movement = new Vector2(moveHorizontal, 0);
 
-            // Creates a new Vector2 where x is determined by 'A' or 'D' input
-            Vector2 movement = new Vector2(moveHorizontal, 0);
-
-            // Applies the movement to the Rigidbody2D
-            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+                // Applies the movement to the Rigidbody2D
+                rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+            }
 
         }
 
@@ -136,6 +137,24 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            wallClimb = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            wallClimb = false;
+        }
+    }
+
+
 
     private void LaunchGrapplingHook(float power)
     {
