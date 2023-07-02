@@ -99,6 +99,13 @@ public class Player : MonoBehaviour
         {
             transform.position = originalPosition;
         }
+
+        
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Vector3 newPosition = transform.position + Vector3.up * 10f;
+            transform.position = newPosition;
+        }
         
         FaceMouse();
         
