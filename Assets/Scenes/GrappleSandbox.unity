@@ -981,6 +981,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 794790061092925419, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2078289361, guid: 571cd095503c3cc44a3b563d6ced2f1a, type: 3}
+    - target: {fileID: 794790061092925419, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -1036,6 +1040,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5442580846178339151, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_Frequency
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1470167400}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: launchPowerMax
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: launchPowerMin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: launchPowerIncrement
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 9004510868027019629, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1048,6 +1072,11 @@ PrefabInstance:
 --- !u!4 &1470167394 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+  m_PrefabInstance: {fileID: 1470167393}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1470167400 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4289283505365203686, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
   m_PrefabInstance: {fileID: 1470167393}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1504476054
