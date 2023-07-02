@@ -13,11 +13,11 @@ public class Player : MonoBehaviour
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
     private float dirX = 0.2f;
-    [SerializeField] private Vector2 moveForce;
     [SerializeField] private float moveSpeed = 7f;
+    private float airSpeed = 13f;
 
     [SerializeField]
-    private float m_MaxSpeed = 1f;
+    private float m_MaxSpeed = 20f;
     private bool m_MovingToHook = false;
 
     [SerializeField]
@@ -36,6 +36,10 @@ public class Player : MonoBehaviour
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
+    }
+
+    private void Start() {
+        rb = this.GetComponent<Rigidbody2D>();
     }
 
     private void Update()
