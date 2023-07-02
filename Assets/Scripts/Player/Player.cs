@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
             // Applies the force to the Rigidbody2D
             if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
-                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+                rb.AddForce(movement * 24f, ForceMode2D.Force);
             }
         }
     }
