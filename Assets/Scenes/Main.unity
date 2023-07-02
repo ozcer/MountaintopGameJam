@@ -46746,7 +46746,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375463769}
   m_LocalRotation: {x: -0, y: -0, z: 0.52483207, w: 0.8512058}
-  m_LocalPosition: {x: -7.0716, y: 60.9263, z: 0}
+  m_LocalPosition: {x: -7.12, y: 60.9263, z: 0}
   m_LocalScale: {x: 6.2528777, y: 0.9701991, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46871,6 +46871,18 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_LocalPosition.x
       value: -30.2
       objectReference: {fileID: 0}
@@ -46909,6 +46921,10 @@ PrefabInstance:
     - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5442580846178339151, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: m_Frequency
@@ -46954,6 +46970,10 @@ PrefabInstance:
       propertyPath: launchPowerMax
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: animationSelector
+      value: 
+      objectReference: {fileID: 1810833624}
     - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: launchPowerIncrement
       value: 0.2
@@ -48113,6 +48133,17 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 4289283505365203686, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
   m_PrefabInstance: {fileID: 1470167393}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1810833624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8573033454113752718, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+  m_PrefabInstance: {fileID: 1470167393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 980927891966e7244a64ca9f45831b16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1926518649
 GameObject:
   m_ObjectHideFlags: 0

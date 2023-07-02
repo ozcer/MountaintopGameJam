@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private SpringJoint2D m_SpringJoint;
     private SpriteRenderer m_SpriteRenderer;
+    public AnimationSelector animationSelector;
     
     [SerializeField]
     private GameObject m_HookPrefab;
@@ -43,6 +44,7 @@ public class Player : MonoBehaviour
     public ChargeBar chargeBar;
     
     private bool wallClimb = false;
+    private bool left;
     
     private void Awake()
     {
@@ -70,6 +72,7 @@ public class Player : MonoBehaviour
         }
         
         FaceMouse();
+        
         GlideLogic();
     }
 
@@ -190,8 +193,24 @@ public class Player : MonoBehaviour
 
     private void FaceMouse()
     {
-        Vector2 mousePositionInWorld = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        m_SpriteRenderer.flipX = (mousePositionInWorld.x < transform.position.x);
+        Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if(rb.velocity.x > 0) {
+            m_SpriteRenderer.flipX = false;
+        } 
+        if(rb.velocity.x < 0) {
+            m_SpriteRenderer.flipX = true;
+        }
+
+
+        if(Input.GetMouseButton(0)){
+            if (mousePositionInWorld.x < transform.position.x){
+                m_SpriteRenderer.flipX = true;
+            }
+            else if (mousePositionInWorld.x > transform.position.x){
+                m_SpriteRenderer.flipX = false;
+            }
+        }
     }
 
     private void GlideLogic()
