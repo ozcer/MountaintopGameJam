@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private GameObject m_CurrentHook;
     private float dirX = 0.2f;
     [SerializeField] private float moveSpeed = 7f;
-    private float airSpeed = 13f;
+    public float airSpeed = 26f;
     public float speed = 10.0f;
 
     [SerializeField]
