@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
             {
                 DestroyGrapplingHook();
             }
+            launchPower = launchPowerMin;
         }
         
         FaceMouse();
@@ -211,10 +212,5 @@ public class Player : MonoBehaviour
     {
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
         m_MovingToHook = true;
-    }
-
-    public void Kill()
-    {
-        Debug.Log("I am dead!!!");
     }
 }
