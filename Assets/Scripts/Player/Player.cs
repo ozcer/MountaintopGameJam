@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            if (m_CurrentHook == null)
+            if (m_CurrentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
                 launchPower = launchPowerMin;

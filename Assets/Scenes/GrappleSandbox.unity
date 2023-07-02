@@ -1044,6 +1044,22 @@ PrefabInstance:
       propertyPath: m_Frequency
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 5442580846178339151, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_EnableCollision
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5442580846178339151, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: m_ConnectedRigidBody
+      value: 
+      objectReference: {fileID: 1470167397}
+    - target: {fileID: 8573033454113752718, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: raycastDistance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8573033454113752718, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 503
+      objectReference: {fileID: 0}
     - target: {fileID: 8908049651607276984, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
       propertyPath: animator
       value: 
@@ -1072,6 +1088,11 @@ PrefabInstance:
 --- !u!4 &1470167394 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4487328037632610539, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
+  m_PrefabInstance: {fileID: 1470167393}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &1470167397 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 3133022157655639566, guid: ba01901513c934048a10d6c7e21a4d69, type: 3}
   m_PrefabInstance: {fileID: 1470167393}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1470167400 stripped
