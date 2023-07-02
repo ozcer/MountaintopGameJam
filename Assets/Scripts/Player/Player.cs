@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     [Header("Charging")]
     public float launchPowerMin = 10f;
     public float launchPowerMax = 50f;
-    public float launchPowerIncrement = 1f;
+    public float launchPowerIncrement = 0.3f;
     public float launchPower = 0f;
     
     private void Awake()
@@ -46,12 +46,12 @@ public class Player : MonoBehaviour
             if (m_CurrentHook == null)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-                launchPower = launchPowerMin;
             }
             else
             {
                 DestroyGrapplingHook();
             }
+            launchPower = launchPowerMin;
         }
         
         // Bullet time
@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                // m_SpringJoint.connectedBody = rb;
+                m_SpringJoint.connectedBody = rb;
 
                 m_MovingToHook = false;
 
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
 
     private void DestroyGrapplingHook()
     {
-        // m_SpringJoint.connectedBody = rb;
+        m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
         Destroy(m_CurrentHook);
@@ -150,10 +150,5 @@ public class Player : MonoBehaviour
     {
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
         m_MovingToHook = true;
-    }
-
-    public void Kill()
-    {
-        Debug.Log("I am dead!!!");
     }
 }
