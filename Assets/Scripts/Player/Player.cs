@@ -44,6 +44,8 @@ public class Player : MonoBehaviour
     public ChargeBar chargeBar;
 
     [Header("Recall Logic")]
+    public bool softlocked = false;
+    public bool softlockCheckCoroutineRunning = false;
     public bool touchingHook = false;
     
     private bool wallClimb = false;
@@ -212,6 +214,9 @@ public class Player : MonoBehaviour
 
         Destroy(m_CurrentHook);
         m_CurrentHook = null;
+
+        softlocked = false;
+        softlockCheckCoroutineRunning = false;
     }
 
     private void FaceMouse()
@@ -279,7 +284,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (m_CurrentHook.transform.position.y >= transform.position.y)
+                if (m_CurrentHook.transform.position.y >= transform.position.y || softlocked)
                 {
                     DestroyGrapplingHook();
                 }
@@ -301,5 +306,27 @@ public class Player : MonoBehaviour
         m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
 
         m_MovingToHook = true;
+
+        softlockCheckCoroutineRunning = true;
+        StartCoroutine(SoftlockCheckCoroutine());
+    }
+
+    private IEnumerator SoftlockCheckCoroutine()
+    {
+        while (!softlocked && softlockCheckCoroutineRunning)
+        {
+            Vector2 initialPosition = transform.position;
+            yield return new WaitForSeconds(1);
+            if (softlockCheckCoroutineRunning)
+            {
+                Vector2 finalPosition = transform.position;
+
+                if (Vector2.Distance(initialPosition, finalPosition) < 0.5f)
+                {
+                    softlocked = true;
+                    softlockCheckCoroutineRunning = false;
+                }
+            }
+        }
     }
 }
