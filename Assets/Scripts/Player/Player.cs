@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Animator animator;
+    private Animator m_Animator;
     private Rigidbody2D rb;
     private SpringJoint2D m_SpringJoint;
     private SpriteRenderer m_SpriteRenderer;
@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     public float maxGlideFrames = 1200f;
     public float glideFramesRemaining;
     public bool glideDepleted = false;
+    public bool gliding = false;
 
     [Header("UI")]
     public GameObject canvasObject;
@@ -56,6 +57,7 @@ public class Player : MonoBehaviour
     
     private void Awake()
     {
+        m_Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -105,7 +107,7 @@ public class Player : MonoBehaviour
         bool mouseDown = Input.GetMouseButton(0);
         if (m_CurrentHook == null)
         {
-            animator.SetBool("Charging", mouseDown);
+            m_Animator.SetBool("Charging", mouseDown);
             if (mouseDown)
             {
                 if (!canvasObject.activeSelf)
@@ -159,7 +161,7 @@ public class Player : MonoBehaviour
             // Applies the force to the Rigidbody2D
             if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
-                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+                rb.AddForce(movement * 24f, ForceMode2D.Force);
             }
         }
     }
@@ -194,6 +196,8 @@ public class Player : MonoBehaviour
 
     private void LaunchGrapplingHook(float power)
     {
+        m_Animator.SetBool("Charging", false);
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 targetPosition = new Vector2(worldPosition.x, worldPosition.y);
 
@@ -261,6 +265,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetButton("Jump") && !glideDepleted)
         {
+            m_Animator.SetBool("Gliding", true);
             if (rb.velocity.y < -1)
             {
                 rb.velocity = new Vector2(rb.velocity.x, -1);
@@ -274,6 +279,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            m_Animator.SetBool("Gliding", false);
             if (glideFramesRemaining < maxGlideFrames)
             {
                 glideFramesRemaining += 1;
