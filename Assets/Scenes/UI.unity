@@ -299,6 +299,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8526108477446974718, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8695457617792977246, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8813101578325157213, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
       propertyPath: m_Pivot.x
       value: 0
