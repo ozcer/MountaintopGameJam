@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
         {
             if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
             {
-                m_SpringJoint.connectedBody = rb;
+                // m_SpringJoint.connectedBody = rb;
 
                 m_MovingToHook = false;
 
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
 
     private void DestroyGrapplingHook()
     {
-        m_SpringJoint.connectedBody = rb;
+        // m_SpringJoint.connectedBody = rb;
         m_MovingToHook = false;
 
         Destroy(m_CurrentHook);
