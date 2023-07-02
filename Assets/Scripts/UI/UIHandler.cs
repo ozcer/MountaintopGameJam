@@ -16,13 +16,15 @@ public class UIHandler : MonoBehaviour
 
     [Header("Distance Traveled")]
     [SerializeField] private TextMeshProUGUI distanceText;
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerObject;
+    private Player player;
     private float distance, startHeight;
 
     // Start is called before the first frame update
     void Start()
     {
-        startHeight = player.transform.position.y;
+        startHeight = playerObject.transform.position.y;
+        player = playerObject.GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -35,21 +37,7 @@ public class UIHandler : MonoBehaviour
         setDistanceText();
 
         //bullet time
-        if (Input.GetKeyDown(KeyCode.Space)) useBulletTime();
-        else refillBulletTime();
-    }
-
-    private void useBulletTime()
-    {
-        bulletTimeAmount -= Time.deltaTime * drainSpeed;
-        bulletTime.fillAmount = bulletTimeAmount / 100f;
-    }
-
-    private void refillBulletTime()
-    {
-        bulletTimeAmount += Time.deltaTime * refillSpeed;
-        bulletTimeAmount = Mathf.Clamp(bulletTimeAmount, 0f, 100f);
-        bulletTime.fillAmount = bulletTimeAmount / 100f;
+        bulletTime.fillAmount = player.glideFramesRemaining / player.maxGlideFrames;
     }
 
     private void setTimerText()
@@ -67,7 +55,7 @@ public class UIHandler : MonoBehaviour
 
     private void setDistanceText()
     {
-        distance = player.transform.position.y - startHeight;
+        distance = playerObject.transform.position.y - startHeight;
         if (distance < 0f) distance = 0f;
         distanceText.text = "Current Height: " + distance.ToString("F2") + "m";
     }

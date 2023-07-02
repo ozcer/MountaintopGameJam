@@ -35,8 +35,8 @@ public class Player : MonoBehaviour
     public float launchPower = 0f;
 
     [Header("Gliding")]
-    public int maxGlideFrames = 1200;
-    public int glideFramesRemaining;
+    public float maxGlideFrames = 1200f;
+    public float glideFramesRemaining;
     public bool glideDepleted = false;
 
     [Header("UI")]
