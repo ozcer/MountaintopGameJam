@@ -17,10 +17,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OpeningCutscene.unity
     guid: 511ca43c4701f8641a90eb622b356147
+  - enabled: 1
+    path: Assets/Scenes/Main Copy.unity
+    guid: 1071c03ebeca22a43a46730268589097
   - enabled: 0
     path: Assets/Scenes/Main.unity
     guid: d2f554eb49c278847becbd478ae0598b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Main Copy.unity
     guid: 1071c03ebeca22a43a46730268589097
   - enabled: 1
