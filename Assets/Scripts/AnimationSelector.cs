@@ -20,15 +20,8 @@ public class AnimationSelector : MonoBehaviour
             Vector3.down, 
             raycastDistance, 
             groundLayer);
+        print(isOnGround);
         animator.SetBool("Airborne", !isOnGround);
-        
-        animator.SetBool("Charging", Input.GetKey(KeyCode.Space));
-        
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            rb.AddForce(jumpForce, ForceMode2D.Impulse);
-        }
-        
         animator.SetFloat("YSpeed", rb.velocity.y);
     }
 

@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Animator animator;
+    
     private Rigidbody2D m_Rigidbody;
     private SpringJoint2D m_SpringJoint;
-
+    
     [SerializeField]
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
@@ -23,7 +25,13 @@ public class Player : MonoBehaviour
     
     [SerializeField]
     private float m_retrieveHookDistance = 1f;
-
+    
+    [Header("Charging")]
+    public float launchPowerMin = 10f;
+    public float launchPowerMax = 50f;
+    public float launchPowerIncrement = 1f;
+    public float launchPower = 0f;
+    
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
@@ -32,26 +40,24 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(0))
         {
             if (m_CurrentHook == null)
             {
-                LaunchGrapplingHook();
+                LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
+                launchPower = launchPowerMin;
             }
             else
             {
                 DestroyGrapplingHook();
             }
         }
-
-        if (Input.GetMouseButton(1))
-        {
-            Time.timeScale = 0.5f;
-        } else if (Input.GetMouseButtonUp(1))
-        {
-            Time.timeScale = 1f;
-        }
-         dirX = Input.GetAxis("Horizontal");
+        
+        // Bullet time
+        Time.timeScale = Input.GetButton("Jump") ? 0.5f : 1f;
+        
+        // Walking movement
+        dirX = Input.GetAxis("Horizontal");
         moveForce = new Vector2(dirX, 0f);
         m_Rigidbody.AddForce(moveForce,ForceMode2D.Impulse);
     }
@@ -72,9 +78,20 @@ public class Player : MonoBehaviour
                 m_CurrentHook = null;
             }
         }
+        
+        bool mouseDown = Input.GetMouseButton(0);
+        animator.SetBool("Charging", mouseDown);
+        if (mouseDown)
+        {
+            
+            if (launchPower < launchPowerMax)
+            {
+                launchPower += launchPowerIncrement;
+            }
+        }
     }
 
-    private void LaunchGrapplingHook()
+    private void LaunchGrapplingHook(float power)
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 targetPosition = new Vector2(worldPosition.x, worldPosition.y);
@@ -92,7 +109,7 @@ public class Player : MonoBehaviour
 
         Hook hook = hookObject.GetComponent<Hook>();
         hook.Player = this;
-        hook.Launch(fireVector, m_LaunchPower);
+        hook.Launch(fireVector, power);
 
         m_CurrentHook = hookObject;
     }
