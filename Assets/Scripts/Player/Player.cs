@@ -231,6 +231,7 @@ public class Player : MonoBehaviour
         Destroy(m_CurrentHook);
         m_CurrentHook = null;
 
+        touchingHook = false;
         softlocked = false;
         softlockCheckCoroutineRunning = false;
     }
@@ -342,7 +343,6 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(1);
             if (softlockCheckCoroutineRunning)
             {
-
                 Vector2 finalPosition = transform.position;
 
                 if (Vector2.Distance(initialPosition, finalPosition) < 0.5f)
