@@ -64,6 +64,8 @@ public class Player : MonoBehaviour
 
         glideFramesRemaining = maxGlideFrames;
         originalPosition = transform.position;
+
+        StartCoroutine(QuackCoroutine());
     }
 
     private void Update()
@@ -112,9 +114,9 @@ public class Player : MonoBehaviour
             {
                 if (!canvasObject.activeSelf)
                 {
+                    SoundManager.Instance.PlaySound(Sound.Charge);
                     canvasObject.SetActive(true);
                 }
-
 
                 if (launchPower < launchPowerMax)
                 {
@@ -196,6 +198,8 @@ public class Player : MonoBehaviour
 
     private void LaunchGrapplingHook(float power)
     {
+        SoundManager.Instance.PlaySound(Sound.Throw);
+
         m_Animator.SetBool("Charging", false);
 
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -271,7 +275,12 @@ public class Player : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, -1);
             }
 
+            if (glideFramesRemaining % 200 == 0)
+            {
+                SoundManager.Instance.PlaySound(Sound.Flap, 2f);
+            }
             glideFramesRemaining -= 1;
+
             if (glideFramesRemaining <= 0)
             {
                 glideDepleted = true;
@@ -343,6 +352,25 @@ public class Player : MonoBehaviour
                     softlocked = true;
                     softlockCheckCoroutineRunning = false;
                 }
+            }
+        }
+    }
+
+    private IEnumerator QuackCoroutine()
+    {
+        while (true)
+        {
+            int interval = (int) Random.Range(5, 15);
+            yield return new WaitForSeconds(interval);
+
+            int d20 = (int) Random.Range(0, 20);
+            if (d20 == 10)
+            {
+                SoundManager.Instance.PlaySound(Sound.HumanQuack);
+            }
+            else
+            {
+                SoundManager.Instance.PlaySound(Sound.Quack);
             }
         }
     }

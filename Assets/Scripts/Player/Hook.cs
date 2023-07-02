@@ -41,7 +41,18 @@ public class Hook : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("TetherableWall"))
         {
+            SoundManager.Instance.PlaySound(Sound.StickyHit);
             Stick();
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("NonTetherableWall"))
+        {
+            SoundManager.Instance.PlaySound(Sound.NonStickyHit);
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
+        {
+            SoundManager.Instance.PlaySound(Sound.BouncyHit);
         }
     }
 

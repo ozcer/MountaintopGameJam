@@ -13,20 +13,10 @@ public class AnimationSelector : MonoBehaviour
     public LayerMask groundLayer;
     public bool left;
     
-    // Update is called once per frame
     void Update()
     {
-        // bool isOnGround = Physics2D.Raycast(
-        //     collider.bounds.center + Vector3.down * collider.bounds.extents.y, 
-        //     Vector3.down, 
-        //     raycastDistance, 
-        //     groundLayer);
-        // // print(isOnGround);
-        // animator.SetBool("Airborne", !isOnGround);
-        // animator.SetFloat("YSpeed", rb.velocity.y);
         animator.SetBool("YSpeedBelowZero", rb.velocity.y < 0);
         animator.SetBool("XSpeedNonZero", rb.velocity.x != 0);
-
     }
 
     void OnDrawGizmos()
