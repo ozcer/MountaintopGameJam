@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private GameObject m_CurrentHook;
     private float dirX = 0.2f;
     [SerializeField] private float moveSpeed = 7f;
-    private float airSpeed = 13f;
+    private float airSpeed = 23f;
     public float speed = 10.0f;
 
     [SerializeField]
@@ -129,11 +129,6 @@ public class Player : MonoBehaviour
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
         Vector2 movement = new Vector2(moveHorizontal, 0);
-
-
-        
-
-
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
 
