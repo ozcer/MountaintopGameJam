@@ -136,34 +136,31 @@ public class Player : MonoBehaviour
 
 
         
-
-
+        if(!softlockCheckCoroutineRunning)
+        {
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
-
-        // Applies the force to the Rigidbody2D
-        if(Mathf.Abs(rb.velocity.x) < 10) {
-            // Applies the force to the Rigidbody2D
-            rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-        }
-        
-        // Control while on ground
-        if(grounded){
-
-            // Creates a new Vector2 where x is determined by 'A' or 'D' input
-            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-
-
-        }
-        
-
-        //  Less control while in air
-        if(m_MovingToHook){
 
             // Applies the force to the Rigidbody2D
             if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
-                rb.AddForce(movement * 24f, ForceMode2D.Force);
+                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+            }
+            
+            // Control while on ground
+            if(grounded){
+                // Creates a new Vector2 where x is determined by 'A' or 'D' input
+                rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+            }
+            
+            //  Less control while in air
+            if(m_MovingToHook){
+
+                // Applies the force to the Rigidbody2D
+                if(Mathf.Abs(rb.velocity.x) < 10) {
+                    // Applies the force to the Rigidbody2D
+                    rb.AddForce(movement * 24f, ForceMode2D.Force);
+                }
             }
         }
     }
@@ -345,6 +342,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(1);
             if (softlockCheckCoroutineRunning)
             {
+
                 Vector2 finalPosition = transform.position;
 
                 if (Vector2.Distance(initialPosition, finalPosition) < 0.5f)
