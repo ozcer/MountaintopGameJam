@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     [Header("Charging")]
     public float launchPowerMin = 10f;
     public float launchPowerMax = 50f;
-    public float launchPowerIncrement = 0.3f;
+    public float launchPowerIncrement = 1f;
     public float launchPower = 0f;
     
     private void Awake()
