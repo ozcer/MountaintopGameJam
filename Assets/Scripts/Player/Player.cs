@@ -35,8 +35,8 @@ public class Player : MonoBehaviour
     public float launchPower = 0f;
 
     [Header("Gliding")]
-    public int maxGlideFrames = 1200;
-    public int glideFramesRemaining;
+    public float maxGlideFrames = 1200f;
+    public float glideFramesRemaining;
     public bool glideDepleted = false;
     public bool gliding = false;
 
@@ -126,26 +126,37 @@ public class Player : MonoBehaviour
             }
         }
         
+
+        float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
+        // Creates a new Vector2 where x is determined by 'A' or 'D' input
+        Vector2 movement = new Vector2(moveHorizontal, 0);
+
+
+        
+
+
+
+        // Creates a new Vector2 where x is determined by 'A' or 'D' input
+
+        // Applies the force to the Rigidbody2D
+        if(Mathf.Abs(rb.velocity.x) < 10) {
+            // Applies the force to the Rigidbody2D
+            rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+        }
+        
         // Control while on ground
-        if(!m_MovingToHook){
-            if(!wallClimb || grounded){
-                float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+        if(grounded){
 
-                // Creates a new Vector2 where x is determined by 'A' or 'D' input
-                Vector2 movement = new Vector2(moveHorizontal, 0);
+            // Creates a new Vector2 where x is determined by 'A' or 'D' input
+            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
 
-                // Applies the movement to the Rigidbody2D
-                rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-            }
 
         }
+        
 
         //  Less control while in air
         if(m_MovingToHook){
-            float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
-
-            // Creates a new Vector2 where x is determined by 'A' or 'D' input
-            Vector2 movement = new Vector2(moveHorizontal, 0);
 
             // Applies the force to the Rigidbody2D
             if(Mathf.Abs(rb.velocity.x) < 10) {
