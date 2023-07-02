@@ -623,3 +623,5 @@ MonoBehaviour:
   drainSpeed: 75
   refillSpeed: 20
   timerText: {fileID: 8526108477446974718}
+  distanceText: {fileID: 8695457617792977246}
+  player: {fileID: 0}
