@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GrappleSandbox.unity
     guid: 75b1d8436ab043c48b16b0bb8a608898
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
+    guid: d2f554eb49c278847becbd478ae0598b
   m_configObjects: {}
