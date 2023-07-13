@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     
     [SerializeField]
     private float m_retrieveHookDistance = 1f;
+
+    [SerializeField] private LayerMask platformLayer;
     
     [Header("Charging")]
     public float launchPowerMin = 10f;
@@ -50,7 +52,6 @@ public class Player : MonoBehaviour
     public bool touchingHook = false;
     
     private bool wallClimb = false;
-    private bool grounded = false;
     private bool left;
 
     private Vector3 originalPosition;
@@ -65,6 +66,8 @@ public class Player : MonoBehaviour
     
     public bool useGlideOverride = false;
     public bool glideOverride = false;
+
+    public GroundCheck groundScript;
     
     private void Awake()
     {
@@ -171,7 +174,7 @@ public class Player : MonoBehaviour
             // }
             
             // Control while on ground
-            if(grounded) {
+            if(groundScript.isGrounded) {
                 // Creates a new Vector2 where x is determined by 'A' or 'D' input
                 rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
 
@@ -227,11 +230,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             wallClimb = true;
-        }
-        
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            grounded = true;
+            
         }
     }
 
@@ -241,14 +240,9 @@ public class Player : MonoBehaviour
         {
             wallClimb = false;
         }
-        
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            grounded = false;
-        }
     }
 
-
+    
 
     private void LaunchGrapplingHook(float power)
     {

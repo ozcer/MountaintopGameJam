@@ -12,6 +12,7 @@ public class Hook : MonoBehaviour
 
     private bool m_CanRecall = false;
     private Color lineColor;
+    private float h_MaxSpeed = 40;
 
     void Update()
     {
@@ -32,6 +33,11 @@ public class Hook : MonoBehaviour
 
     }
 
+    private void FixedUpdate(){
+        m_Rigidbody.velocity = Vector2.ClampMagnitude(m_Rigidbody.velocity, h_MaxSpeed);
+    }
+
+
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
@@ -47,6 +53,7 @@ public class Hook : MonoBehaviour
     {
         return m_CanRecall;
     }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
