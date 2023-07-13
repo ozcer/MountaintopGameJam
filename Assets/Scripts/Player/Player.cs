@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     public float launchPowerMin = 10f;
     public float launchPowerMax = 50f;
     public float launchPowerIncrement = 1f;
-    public float launchPower = 0f;
+    private float launchPower = 0f;
 
     [Header("Gliding")]
     public float maxGlideFrames = 1200f;
@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
+
+        launchPower = launchPowerMin;
 
         glideFramesRemaining = maxGlideFrames;
         originalPosition = transform.position;
