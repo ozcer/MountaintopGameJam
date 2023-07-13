@@ -67,6 +67,14 @@ public class Player : MonoBehaviour
     public bool glideOverride = false;
 
     public GroundCheck groundScript;
+
+    [Header("Bounce Timer")]
+    [SerializeField]
+    private bool recentBounce = false;
+    private float currentClamp = 20f;
+    public float minClamp;
+    public float maxClamp;
+    public float clampInterval;
     
     private void Awake()
     {
@@ -123,7 +131,16 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, m_MaxSpeed);
+        // Temporarily increases Y clamp max after bouncing off something
+        if(recentBounce){
+            currentClamp -= clampInterval;
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, currentClamp);
+            if(currentClamp <= minClamp){
+                recentBounce = false;
+            }
+        }
+        // Clamp speed
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));        
 
         if (m_MovingToHook)
         {
@@ -165,24 +182,19 @@ public class Player : MonoBehaviour
         
         if(!softlockCheckCoroutineRunning)
         {
-
-        // Creates a new Vector2 where x is determined by 'A' or 'D' input
-
-        
+        // Only do the following if both of these statements are false, awful code
             if(wallClimbL && rb.velocity.x < 4)
             {}
             else if(wallClimbR && rb.velocity.x > -4)
             {}
             else{
             // Applies the force to the Rigidbody2D
-            // if(Mathf.Abs(rb.velocity.x) < 10) {
-                // Applies the force to the Rigidbody2D
                 rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-                // }
                 
+
                 // Control while on ground
                 if(groundScript.isGrounded) {
-                    // Creates a new Vector2 where x is determined by 'A' or 'D' input
+                    // Ignore current player velocity and overwrite, snap turning
                     rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
 
                     if (moveHorizontal != 0)
@@ -202,32 +214,21 @@ public class Player : MonoBehaviour
                     }
                 }
 
+                // If in the air
+                // Additive movement, slow turn
+
                 else{
+                    // Avoids going above 10 speed in either direction
                     if(moveHorizontal > 0){
                         if(rb.velocity.x < 10){
                             rb.AddForce(movement * 40f, ForceMode2D.Force);
                         }
                     }
-
-                    
                     else if(moveHorizontal < 0){
                         if(rb.velocity.x > -10){
                             rb.AddForce(movement * 40f, ForceMode2D.Force);
                         }
                     }
-
-                }
-                
-                //  Less control while in air
-                if(m_MovingToHook){
-
-                    // Applies the force to the Rigidbody2D
-
-
-                    // if(Mathf.Abs(rb.velocity.x) < 10) {
-                    //     // Applies the force to the Rigidbody2D
-                    //     rb.AddForce(movement * 24f, ForceMode2D.Force);
-                    // }
                 }
             }
         }
@@ -247,6 +248,13 @@ public class Player : MonoBehaviour
         {
             wallClimbR = true;
         }
+        if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
+        {
+            SoundManager.Instance.PlaySound(Sound.BouncyHit);
+            recentBounce = true;
+            currentClamp = maxClamp;
+        }
+
     }
 
     private void OnCollisionExit2D(Collision2D collision)
