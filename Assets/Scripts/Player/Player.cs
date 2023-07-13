@@ -167,7 +167,7 @@ public class Player : MonoBehaviour
             // Applies the force to the Rigidbody2D
             // if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
-                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+            rb.AddForce(movement * airSpeed, ForceMode2D.Force);
             // }
             
             // Control while on ground
@@ -191,15 +191,33 @@ public class Player : MonoBehaviour
                     }
                 }
             }
+
+            else{
+                if(moveHorizontal > 0){
+                    if(rb.velocity.x < 10){
+                        rb.AddForce(movement * 40f, ForceMode2D.Force);
+                    }
+                }
+
+                
+                else if(moveHorizontal < 0){
+                    if(rb.velocity.x > -10){
+                        rb.AddForce(movement * 40f, ForceMode2D.Force);
+                    }
+                }
+
+            }
             
             //  Less control while in air
             if(m_MovingToHook){
 
                 // Applies the force to the Rigidbody2D
-                if(Mathf.Abs(rb.velocity.x) < 10) {
-                    // Applies the force to the Rigidbody2D
-                    rb.AddForce(movement * 24f, ForceMode2D.Force);
-                }
+
+
+                // if(Mathf.Abs(rb.velocity.x) < 10) {
+                //     // Applies the force to the Rigidbody2D
+                //     rb.AddForce(movement * 24f, ForceMode2D.Force);
+                // }
             }
         }
     }
@@ -280,10 +298,10 @@ public class Player : MonoBehaviour
     {
         Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if(rb.velocity.x > 0) {
+        if(rb.velocity.x > 0.01) {
             m_SpriteRenderer.flipX = false;
         } 
-        if(rb.velocity.x < 0) {
+        if(rb.velocity.x < 0.01) {
             m_SpriteRenderer.flipX = true;
         }
 
