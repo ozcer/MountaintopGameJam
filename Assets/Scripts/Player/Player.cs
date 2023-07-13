@@ -13,17 +13,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject m_HookPrefab;
     private GameObject m_CurrentHook;
-    private float dirX = 0.2f;
-    [SerializeField] private float moveSpeed = 7f;
+
+    [SerializeField]
     public float airSpeed = 26f;
     public float speed = 10.0f;
 
     [SerializeField]
     private float m_MaxSpeed = 20f;
     private bool m_MovingToHook = false;
-
-    [SerializeField]
-    private float m_LaunchPower = 30f;
     
     [SerializeField]
     private float m_retrieveHookDistance = 1f;
@@ -52,6 +49,8 @@ public class Player : MonoBehaviour
     public bool touchingHook = false;
     
     private bool wallClimb = false;
+    private bool wallClimbL = false;
+    private bool wallClimbR = false;
     private bool left;
 
     private Vector3 originalPosition;
@@ -162,65 +161,72 @@ public class Player : MonoBehaviour
 
 
         
-        if(!softlockCheckCoroutineRunning && !wallClimb)
+        if(!softlockCheckCoroutineRunning)
         {
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
 
+        
+            if(wallClimbL && rb.velocity.x < 4)
+            {}
+            else if(wallClimbR && rb.velocity.x > -4)
+            {}
+            else{
             // Applies the force to the Rigidbody2D
             // if(Mathf.Abs(rb.velocity.x) < 10) {
                 // Applies the force to the Rigidbody2D
-            rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-            // }
-            
-            // Control while on ground
-            if(groundScript.isGrounded) {
-                // Creates a new Vector2 where x is determined by 'A' or 'D' input
-                rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-
-                if (moveHorizontal != 0)
-                {
-                    m_SmokeFramesRemaining -= 1;
-                    if (m_SmokeFramesRemaining <= 0)
-                    {
-                        if (m_SmokeParticlesPrefab != null)
-                            Instantiate(
-                                m_SmokeParticlesPrefab,
-                                new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                                Quaternion.identity
-                            );
-
-                        m_SmokeFramesRemaining = m_FramesBetweenSmoke;
-                    }
-                }
-            }
-
-            else{
-                if(moveHorizontal > 0){
-                    if(rb.velocity.x < 10){
-                        rb.AddForce(movement * 40f, ForceMode2D.Force);
-                    }
-                }
-
-                
-                else if(moveHorizontal < 0){
-                    if(rb.velocity.x > -10){
-                        rb.AddForce(movement * 40f, ForceMode2D.Force);
-                    }
-                }
-
-            }
-            
-            //  Less control while in air
-            if(m_MovingToHook){
-
-                // Applies the force to the Rigidbody2D
-
-
-                // if(Mathf.Abs(rb.velocity.x) < 10) {
-                //     // Applies the force to the Rigidbody2D
-                //     rb.AddForce(movement * 24f, ForceMode2D.Force);
+                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
                 // }
+                
+                // Control while on ground
+                if(groundScript.isGrounded) {
+                    // Creates a new Vector2 where x is determined by 'A' or 'D' input
+                    rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+
+                    if (moveHorizontal != 0)
+                    {
+                        m_SmokeFramesRemaining -= 1;
+                        if (m_SmokeFramesRemaining <= 0)
+                        {
+                            if (m_SmokeParticlesPrefab != null)
+                                Instantiate(
+                                    m_SmokeParticlesPrefab,
+                                    new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                                    Quaternion.identity
+                                );
+
+                            m_SmokeFramesRemaining = m_FramesBetweenSmoke;
+                        }
+                    }
+                }
+
+                else{
+                    if(moveHorizontal > 0){
+                        if(rb.velocity.x < 10){
+                            rb.AddForce(movement * 40f, ForceMode2D.Force);
+                        }
+                    }
+
+                    
+                    else if(moveHorizontal < 0){
+                        if(rb.velocity.x > -10){
+                            rb.AddForce(movement * 40f, ForceMode2D.Force);
+                        }
+                    }
+
+                }
+                
+                //  Less control while in air
+                if(m_MovingToHook){
+
+                    // Applies the force to the Rigidbody2D
+
+
+                    // if(Mathf.Abs(rb.velocity.x) < 10) {
+                    //     // Applies the force to the Rigidbody2D
+                    //     rb.AddForce(movement * 24f, ForceMode2D.Force);
+                    // }
+                }
             }
         }
     }
@@ -230,7 +236,14 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             wallClimb = true;
-            
+        }
+        if (collision.gameObject.CompareTag("WallL"))
+        {
+            wallClimbL = true;
+        }
+        if (collision.gameObject.CompareTag("WallR"))
+        {
+            wallClimbR = true;
         }
     }
 
@@ -239,6 +252,14 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             wallClimb = false;
+        }
+        if (collision.gameObject.CompareTag("WallL"))
+        {
+            wallClimbL = false;
+        }
+        if (collision.gameObject.CompareTag("WallR"))
+        {
+            wallClimbR = false;
         }
     }
 

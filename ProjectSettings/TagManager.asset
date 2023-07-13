@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Wall
+  - WallL
+  - WallR
   layers:
   - Default
   - TransparentFX
