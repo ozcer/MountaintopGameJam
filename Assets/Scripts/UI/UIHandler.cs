@@ -48,15 +48,15 @@ public class UIHandler : MonoBehaviour
         seconds = Mathf.Floor(timer % 60f);
 
         if (hours <= 0)
-            timerText.text = "Time Elapsed: " + minutes.ToString("00") + ":" + seconds.ToString("00");
+            timerText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
         else 
-            timerText.text = "Time Elapsed: " + hours.ToString("00") + ":" + minutes.ToString("00") + ":" + seconds.ToString("00");
+            timerText.text = hours.ToString("00") + ":" + minutes.ToString("00") + ":" + seconds.ToString("00");
     }
 
     private void setDistanceText()
     {
         distance = playerObject.transform.position.y - startHeight;
         if (distance < 0f) distance = 0f;
-        distanceText.text = "Current Height: " + distance.ToString("F0") + "m";
+        distanceText.text = distance.ToString("F0") + "m";
     }
 }
