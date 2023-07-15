@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     public bool mouseDown;
     public bool mouseUp;
 
+    private Vector2 aim;
     public bool invertDirection = false;    // Change in options
 
     [Header("Gliding")]
@@ -74,6 +75,9 @@ public class Player : MonoBehaviour
     public bool glideOverride = false;
 
     public GroundCheck groundScript;
+
+    public bool stickAim;
+    private Vector2 stickSave;
     
 
     [Header("Bounce Timer")]
@@ -82,7 +86,6 @@ public class Player : MonoBehaviour
     public float minClamp;
     public float maxClamp;
     public float clampInterval;
-
 
     public PauseMenu pauseMenu;
 
@@ -104,7 +107,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (mouseUp)
+        if (mouseUp || (stickAim && aim == Vector2.zero))
         {
             if (m_CurrentHook == null && m_HookPrefab)
             {
@@ -115,6 +118,7 @@ public class Player : MonoBehaviour
                 RecallLogic();
             }
             launchPower = launchPowerMin;
+            stickAim = false;
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -142,6 +146,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         moveHorizontal = controllerManager.moveInputVector.x;
+        aim = controllerManager.aimInputVector;
 
         //Reduce maximum clamp after a bounce
         if(currentClamp > minClamp){
@@ -160,7 +165,7 @@ public class Player : MonoBehaviour
         {
             m_Animator.SetBool("Charging", mouseDown);
 
-            if (mouseDown)
+            if (mouseDown || aim != Vector2.zero)
             {
                 if (!displayChargeUI) //set mouse down instance to trigger event that can be read by UIHandler
                 {
@@ -176,6 +181,14 @@ public class Player : MonoBehaviour
 
                     chargeBar.SetValue(chargePercent);
                     
+                }
+                if(aim != Vector2.zero)
+                {
+                    stickAim = true;
+                    if(aim.magnitude > .95)
+                    {
+                        stickSave = aim;
+                    }
                 }
             }
         }
@@ -266,6 +279,11 @@ public class Player : MonoBehaviour
 
         Vector2 fireVector = rotation * unitVector;
 
+        if (stickAim)
+        {
+            fireVector = stickSave;
+        }
+
         if (invertDirection)
         {
             fireVector *= -1f; // Invert the fireVector in the Y direction if invertDirection is true
@@ -276,6 +294,7 @@ public class Player : MonoBehaviour
         Hook hook = hookObject.GetComponent<Hook>();
         hook.Player = this;
         hook.Launch(fireVector, power);
+        
 
         m_CurrentHook = hookObject;
         GameManager.Instance.ChangeCameraTarget(hookObject.transform);

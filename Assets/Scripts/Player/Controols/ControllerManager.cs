@@ -20,6 +20,10 @@ public class ControllerManager : MonoBehaviour
     [SerializeField] private float smoothInputSpeed = .2f;
     [SerializeField] private float turnSpeed = .1f;
 
+
+    [SerializeField] public float inputDeadzone;        // Options variable
+
+
     public PauseMenu pauseMenu;
     public Player player;
 
@@ -120,12 +124,21 @@ public class ControllerManager : MonoBehaviour
 
     private void SmoothInput()
     {
+
+
         input = move;
         aimInputVector = aim;
 
-        Debug.Log(rb.velocity.x);
+        if (aimInputVector.magnitude < inputDeadzone)
+        {
+            aimInputVector = Vector2.zero;
+        }
+        if (input.magnitude < inputDeadzone)
+        {
+            input = Vector2.zero;
+        }
 
-        if(Mathf.Abs(rb.velocity.x) > 15f)
+        if (Mathf.Abs(rb.velocity.x) > 15f)
         {
             moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, 0);
         }
@@ -134,24 +147,15 @@ public class ControllerManager : MonoBehaviour
             moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
         }
 
-            // Controller will never return to 0 unless we set it
-            if (Mathf.Abs(moveInputVector.x) < 0.01f)
+
+        // Controller will never return to 0 unless we set it
+        if (Mathf.Abs(moveInputVector.x) < 0.01f)
         {
             moveInputVector.x = 0f;
         }
         if (Mathf.Abs(moveInputVector.y) < 0.01f)
         {
             moveInputVector.y = 0f;
-        }
-
-        // Controller will never return to 0 unless we set it
-        if (Mathf.Abs(aimInputVector.x) < 0.01f)
-        {
-            aimInputVector.x = 0f;
-        }
-        if (Mathf.Abs(aimInputVector.y) < 0.01f)
-        {
-            aimInputVector.y = 0f;
         }
     }
 }

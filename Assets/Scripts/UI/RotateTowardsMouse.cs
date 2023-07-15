@@ -6,10 +6,24 @@ public class RotateTowardsMouse : MonoBehaviour
 {
     public GameObject arrow;
     public Player player;
+    ControllerManager controllerManager;
+    private Vector2 dir;
+
+    private void Awake()
+    {
+        controllerManager = FindObjectOfType<ControllerManager>();
+    }
 
     void FixedUpdate()
     {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        if (player.stickAim)
+        {
+            dir = controllerManager.aimInputVector;
+        }
+        else
+        {
+            dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        }
 
         if (player.invertDirection)
         {
