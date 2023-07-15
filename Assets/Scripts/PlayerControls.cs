@@ -349,17 +349,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""104a9791-5593-4850-8d65-5fc3c4c85b44"",
-                    ""path"": ""<Touchscreen>/Press"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""469d9590-05e7-47e0-95c9-cba550f1ae1c"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
