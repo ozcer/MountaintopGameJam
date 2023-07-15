@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     public float airSpeed = 26f;
+    public float airControl = 10f;
+    public bool extraControl = false;
     public float speed = 10.0f;
 
     [SerializeField]
@@ -48,7 +50,6 @@ public class Player : MonoBehaviour
     public bool softlockCheckCoroutineRunning = false;
     public bool touchingHook = false;
     
-    private bool wallClimb = false;
     private bool wallClimbL = false;
     private bool wallClimbR = false;
 
@@ -166,7 +167,6 @@ public class Player : MonoBehaviour
         }
 
 
-        // Creates a new Vector2 where x is determined by 'A' or 'D' input
         Vector2 movement = new Vector2(moveHorizontal, 0); 
         
         // If hook is below player, disable movement
@@ -175,6 +175,7 @@ public class Player : MonoBehaviour
             return;
         }
 
+        // If climbing a wall, disable movement
         if ((wallClimbL && rb.velocity.x < 4) || (wallClimbR && rb.velocity.x > -4))
         {
             return;
@@ -183,13 +184,12 @@ public class Player : MonoBehaviour
         // Move the player
         rb.AddForce(movement * airSpeed, ForceMode2D.Force);
 
-        // If on the ground
-        if (groundScript.isGrounded)
+        if (groundScript.playerIsGrounded)
         {
-            // Ignore current player velocity and overwrite velocity with snap turning
+            // Overwrite player velocity, IE snap turning
             rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
 
-            // If moving, smoke particles
+            // If moving, do smoke particles
             if (moveHorizontal != 0)
             {
                 m_SmokeFramesRemaining -= 1;
@@ -199,34 +199,31 @@ public class Player : MonoBehaviour
                     Instantiate(
                         m_SmokeParticlesPrefab,
                         new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                        Quaternion.identity
-                    );
+                        Quaternion.identity);
 
                     m_SmokeFramesRemaining = m_FramesBetweenSmoke;
                 }
             }
         }
-        
+
+        // This adds significantly more control while in the air
+
         else
         {
             // Avoids going above 10 speed in either direction
             if (moveHorizontal > 0 && rb.velocity.x < 10)
             {
-                rb.AddForce(movement * 40f, ForceMode2D.Force);
+                rb.AddForce(movement * airControl, ForceMode2D.Force);
             }
             else if (moveHorizontal < 0 && rb.velocity.x > -10)
             {
-                rb.AddForce(movement * 40f, ForceMode2D.Force);
+                rb.AddForce(movement * airControl, ForceMode2D.Force);
             }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            wallClimb = true;
-        }
         if (collision.gameObject.CompareTag("WallL"))
         {
             wallClimbL = true;
@@ -245,10 +242,6 @@ public class Player : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            wallClimb = false;
-        }
         if (collision.gameObject.CompareTag("WallL"))
         {
             wallClimbL = false;

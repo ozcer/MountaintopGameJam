@@ -13,6 +13,7 @@ public class Hook : MonoBehaviour
     private bool m_CanRecall = false;
     private Color lineColor;
     private float h_MaxSpeed = 40;
+    private bool tethered;
 
     void Update()
     {
@@ -34,7 +35,9 @@ public class Hook : MonoBehaviour
     }
 
     private void FixedUpdate(){
-        m_Rigidbody.velocity = Vector2.ClampMagnitude(m_Rigidbody.velocity, h_MaxSpeed);
+        if(!tethered){
+            m_Rigidbody.velocity = Vector2.ClampMagnitude(m_Rigidbody.velocity, h_MaxSpeed);
+        }
     }
 
 
@@ -76,6 +79,7 @@ public class Hook : MonoBehaviour
 
     private void Stick()
     {
+        tethered = true;
         m_Rigidbody.bodyType = RigidbodyType2D.Static;
         if (Player != null)
         {
