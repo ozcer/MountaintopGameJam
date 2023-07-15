@@ -169,14 +169,8 @@ public class Player : MonoBehaviour
 
         Vector2 movement = new Vector2(moveHorizontal, 0); 
         
-        // If hook is below player, disable movement
-        if (softlockCheckCoroutineRunning)
-        {
-            return;
-        }
-
-        // If climbing a wall, disable movement
-        if ((wallClimbL && rb.velocity.x < 4) || (wallClimbR && rb.velocity.x > -4))
+        // If hook is below player or wall climbing, disable movement
+        if (softlockCheckCoroutineRunning || ((wallClimbL && rb.velocity.x < 4) || (wallClimbR && rb.velocity.x > -4)))
         {
             return;
         }
@@ -206,11 +200,11 @@ public class Player : MonoBehaviour
             }
         }
 
-        // This adds significantly more control while in the air
-
+        // Add more air control
         else
         {
-            // Avoids going above 10 speed in either direction
+            // Add more control while speed is less than 10
+
             if (moveHorizontal > 0 && rb.velocity.x < 10)
             {
                 rb.AddForce(movement * airControl, ForceMode2D.Force);
