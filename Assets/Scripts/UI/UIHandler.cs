@@ -10,6 +10,9 @@ public class UIHandler : MonoBehaviour
 
     [Header("Charge")]
     [SerializeField] private CanvasGroup chargeCG;
+    [SerializeField] private Image arrow;
+    [SerializeField] private Color arrowStart, arrowEnd;
+    private Color lerpColor;
 
     [Header("Glide Time")]
     [SerializeField] private CanvasGroup glideCG;
@@ -38,8 +41,19 @@ public class UIHandler : MonoBehaviour
         if (player.displayGlideUI) glideCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(glideCG, 0.05f, true));
         else glideCG.gameObject.SetActive(false); //StartCoroutine(FadeCanvasCoroutine(glideCG, 0.25f, false));
 
-        if (player.displayChargeUI) chargeCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.05f, true));
-        else chargeCG.gameObject.SetActive(false); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.25f, false));
+        lerpColor = Color.Lerp(arrowStart, arrowEnd, player.chargePercent);
+        lerpColor.a = 1f;
+
+        if (player.displayChargeUI)
+        {
+            chargeCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.05f, true));
+            arrow.color = lerpColor;
+        }
+        else
+        {
+            chargeCG.gameObject.SetActive(false); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.25f, false));
+            arrow.color = arrowStart;
+        }
 
         //timer 
         setTimerText();

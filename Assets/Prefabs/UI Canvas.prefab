@@ -542,6 +542,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chargeCG: {fileID: 0}
+  arrow: {fileID: 0}
+  arrowStart: {r: 0.5882353, g: 1, b: 0.5882353, a: 0}
+  arrowEnd: {r: 1, g: 0.5882353, b: 0.5882353, a: 0}
   glideCG: {fileID: 0}
   bulletTime: {fileID: 0}
   bulletTimeAmount: 100

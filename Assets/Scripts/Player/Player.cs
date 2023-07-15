@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     public bool gliding = false;
 
     [Header("UI")]
+    public float chargePercent;
     public ChargeBar chargeBar;
     public bool displayGlideUI, displayChargeUI;
 
@@ -159,7 +160,7 @@ public class Player : MonoBehaviour
                 {
                     launchPower += launchPowerIncrement;
 
-                    float chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+                    chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
                     chargeBar.SetValue(chargePercent);
                 }
             }
