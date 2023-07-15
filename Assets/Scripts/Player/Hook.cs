@@ -14,12 +14,19 @@ public class Hook : MonoBehaviour
     private Color lineColor;
     private float h_MaxSpeed = 40;
     private bool tethered;
+    public GameObject tetherPosition;
+
+    private float nonStickyHitCooldown = 0.5f;
+    private float bouncyHitCooldown = 0.5f;
+
+    private float lastNonStickyHitTime = 0f;
+    private float lastBouncyHitTime = 0f;
 
     void Update()
     {
         if (Player != null)
         {
-            m_LineRenderer.SetPosition(0, transform.position);
+            m_LineRenderer.SetPosition(0, tetherPosition.transform.position);
             m_LineRenderer.SetPosition(1, Player.transform.position);
 
             
@@ -50,6 +57,12 @@ public class Hook : MonoBehaviour
 
         m_Rigidbody.AddForce(direction * power, ForceMode2D.Impulse);
         StartCoroutine(RecallCheckCoroutine());
+        if (m_Rigidbody.velocity.magnitude > 0.01f)
+        {
+            float angle = Mathf.Atan2(m_Rigidbody.velocity.y, m_Rigidbody.velocity.x) * Mathf.Rad2Deg;
+            angle -= 90f; 
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     public bool CanRecall()
@@ -68,12 +81,20 @@ public class Hook : MonoBehaviour
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("NonTetherableWall"))
         {
-            SoundManager.Instance.PlaySound(Sound.NonStickyHit);
+            if (Time.time - lastNonStickyHitTime >= nonStickyHitCooldown)
+            {
+                SoundManager.Instance.PlaySound(Sound.NonStickyHit);
+                lastNonStickyHitTime = Time.time;
+            }
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
         {
-            SoundManager.Instance.PlaySound(Sound.BouncyHit);
+            if (Time.time - lastBouncyHitTime >= bouncyHitCooldown)
+            {
+                SoundManager.Instance.PlaySound(Sound.BouncyHit);
+                lastBouncyHitTime = Time.time;
+            }
         }
     }
 
