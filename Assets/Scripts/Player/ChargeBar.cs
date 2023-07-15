@@ -14,6 +14,9 @@ public class ChargeBar : MonoBehaviour
 
     public void SetValue(float value)
     {
-        m_Slider.value = value;
+        if (m_Slider != null)
+        {
+            m_Slider.value = value;
+        }
     }
 }

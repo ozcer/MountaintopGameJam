@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float m_MaxSpeed = 20f;
+    private float moveHorizontal;
     private bool m_MovingToHook = false;
     
     [SerializeField]
@@ -68,6 +70,7 @@ public class Player : MonoBehaviour
     public bool glideOverride = false;
 
     public GroundCheck groundScript;
+    
 
     [Header("Bounce Timer")]
     [SerializeField]
@@ -75,6 +78,8 @@ public class Player : MonoBehaviour
     public float minClamp;
     public float maxClamp;
     public float clampInterval;
+
+    public ControllerManager controllerManager;
     
     private void Awake()
     {
@@ -128,8 +133,16 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+
         bool mouseDown = Input.GetMouseButton(0);
-        float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+        moveHorizontal = controllerManager.currentInputVector.x;
+
+        if (Mathf.Abs(moveHorizontal) < 0.01f)
+        {
+            moveHorizontal = 0f;
+        }
+
+        Debug.Log(rb.velocity);
 
         //Reduce maximum clamp after a bounce
         if(currentClamp > minClamp){
@@ -161,7 +174,9 @@ public class Player : MonoBehaviour
                     launchPower += launchPowerIncrement;
 
                     chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+
                     chargeBar.SetValue(chargePercent);
+                    
                 }
             }
         }
@@ -295,11 +310,16 @@ public class Player : MonoBehaviour
     {
         Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if(rb.velocity.x > 0.01) {
-            m_SpriteRenderer.flipX = false;
-        } 
-        if(rb.velocity.x < 0.01) {
-            m_SpriteRenderer.flipX = true;
+        if (rb.velocity.x != 0 && moveHorizontal != 0)
+        {
+            if (rb.velocity.x > 0.01)
+            {
+                m_SpriteRenderer.flipX = false;
+            }
+            if (rb.velocity.x < 0.01)
+            {
+                m_SpriteRenderer.flipX = true;
+            }
         }
 
 

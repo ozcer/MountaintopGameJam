@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 3045410546236556520}
   - component: {fileID: 3670732186631554954}
   - component: {fileID: 636804499610472250}
-  - component: {fileID: 8588975878121845067}
   - component: {fileID: 2483760253099190232}
   - component: {fileID: 5089448226772966044}
   - component: {fileID: 6697710319076860796}
@@ -136,11 +135,12 @@ MonoBehaviour:
   m_SmokeParticlesPrefab: {fileID: 1110095856321859318, guid: a4ee577a54473514fb11e18f9c066816, type: 3}
   useGlideOverride: 0
   glideOverride: 0
-  groundScript: {fileID: 8588975878121845067}
+  groundScript: {fileID: 0}
   currentClamp: 20
   minClamp: 0
   maxClamp: 0
   clampInterval: 0
+  controllerManager: {fileID: 0}
 --- !u!50 &3045410546236556520
 Rigidbody2D:
   serializedVersion: 4
@@ -224,33 +224,6 @@ SpringJoint2D:
   m_Distance: 0.005
   m_DampingRatio: 0
   m_Frequency: 0.7
---- !u!114 &8588975878121845067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950443999922929598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d3e9772c44adfa4d97de8b0bfcb1eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerIsGrounded: 0
-  woodLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  whiteLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  bounceLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  isWoodLayer: 0
-  isWhiteLayer: 0
-  isBounceLayer: 0
-  particleManager: {fileID: 0}
-  player: {fileID: 0}
 --- !u!114 &2483760253099190232
 MonoBehaviour:
   m_ObjectHideFlags: 0
