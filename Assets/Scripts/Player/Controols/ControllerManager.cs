@@ -18,30 +18,38 @@ public class ControllerManager : MonoBehaviour
 
     public Vector2 aimInputVector;
     [SerializeField] private float smoothInputSpeed = .2f;
+    [SerializeField] private float turnSpeed = .1f;
 
     public PauseMenu pauseMenu;
     public Player player;
 
     public Vector2 navigate;
-
+    private Rigidbody2D rb;
     private bool pauseBuffer;
 
     private void Awake()
     {
         playerControls = new PlayerControls();
+        rb = player.GetComponent<Rigidbody2D>();
+
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     private void Update()
     {
-
         // ~~~ Gameplay ~~~
         var pMove = playerControls.Player.Move;
         var pAim = playerControls.Player.Aim;
         var fire = playerControls.Player.Fire;
 
+        playerControls.Player.Pause.performed += ctx => pauseMenu.PauseInput();
+
         if (!pauseMenu.gamePaused)
         {
-
             // Left Stick / Keyboard
             pMove.performed += ctx => move = ctx.ReadValue<Vector2>();
             pMove.canceled += ctx => move = Vector2.zero;
@@ -68,7 +76,6 @@ public class ControllerManager : MonoBehaviour
             }
 
             // Pause
-            playerControls.Player.Pause.performed += ctx => pauseMenu.PauseInput();
         }
         else
         {
@@ -116,9 +123,19 @@ public class ControllerManager : MonoBehaviour
         input = move;
         aimInputVector = aim;
 
-        moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
-        // Controller will never return to 0 unless we set it
-        if (Mathf.Abs(moveInputVector.x) < 0.01f)
+        Debug.Log(rb.velocity.x);
+
+        if(Mathf.Abs(rb.velocity.x) > 15f)
+        {
+            moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, 0);
+        }
+        else
+        {
+            moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
+        }
+
+            // Controller will never return to 0 unless we set it
+            if (Mathf.Abs(moveInputVector.x) < 0.01f)
         {
             moveInputVector.x = 0f;
         }

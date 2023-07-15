@@ -29,7 +29,6 @@ public class Hook : MonoBehaviour
 
             m_LineRenderer.startColor = lineColor;
             m_LineRenderer.endColor = lineColor;
-
         }
 
     }
@@ -48,6 +47,7 @@ public class Hook : MonoBehaviour
 
     public void Launch(Vector2 direction, float power)
     {
+
         m_Rigidbody.AddForce(direction * power, ForceMode2D.Impulse);
         StartCoroutine(RecallCheckCoroutine());
     }

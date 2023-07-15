@@ -6,7 +6,6 @@ public class PauseMenu : MonoBehaviour
 {
     public bool gamePaused = false;
     public GameObject pauseCanvas;
-    public ControllerManager controllerManager;
 
     public void PauseInput()
     {

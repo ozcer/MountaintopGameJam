@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     public bool mouseDown;
     public bool mouseUp;
 
+    public bool invertDirection = false;    // Change in options
+
     [Header("Gliding")]
     public float maxGlideFrames = 1200f;
     public float glideFramesRemaining;
@@ -80,6 +82,9 @@ public class Player : MonoBehaviour
     public float minClamp;
     public float maxClamp;
     public float clampInterval;
+
+
+    public PauseMenu pauseMenu;
 
     private ControllerManager controllerManager;
     
@@ -136,11 +141,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         moveHorizontal = controllerManager.moveInputVector.x;
-
-
-        Debug.Log(rb.velocity);
 
         //Reduce maximum clamp after a bounce
         if(currentClamp > minClamp){
@@ -195,22 +196,7 @@ public class Player : MonoBehaviour
         {
             // Overwrite player velocity, IE snap turning
             rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-
-            // If moving, do smoke particles
-            if (moveHorizontal != 0)
-            {
-                m_SmokeFramesRemaining -= 1;
-
-                if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
-                {
-                    Instantiate(
-                        m_SmokeParticlesPrefab,
-                        new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                        Quaternion.identity);
-
-                    m_SmokeFramesRemaining = m_FramesBetweenSmoke;
-                }
-            }
+            SmokeEffect();
         }
 
         // Add more air control
@@ -271,12 +257,19 @@ public class Player : MonoBehaviour
 
         Vector2 difference = targetPosition - (Vector2) transform.position;
         float angle = Vector2.Angle(Vector2.up, difference);
+
+
         angle = (worldPosition.x > transform.position.x) ? -angle : angle;
 
         Vector2 unitVector = Vector2.up;
         Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
 
         Vector2 fireVector = rotation * unitVector;
+
+        if (invertDirection)
+        {
+            fireVector *= -1f; // Invert the fireVector in the Y direction if invertDirection is true
+        }
 
         GameObject hookObject = Instantiate(m_HookPrefab, transform.position, Quaternion.identity);
 
@@ -306,6 +299,8 @@ public class Player : MonoBehaviour
 
     private void FaceMouse()
     {
+        if (pauseMenu.gamePaused) return;
+
         Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (rb.velocity.x != 0 && moveHorizontal != 0)
@@ -327,6 +322,24 @@ public class Player : MonoBehaviour
             }
             else if (mousePositionInWorld.x > transform.position.x){
                 m_SpriteRenderer.flipX = false;
+            }
+        }
+    }
+
+    private void SmokeEffect()
+    {
+        if (moveHorizontal != 0)
+        {
+            m_SmokeFramesRemaining -= 1;
+
+            if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
+            {
+                Instantiate(
+                    m_SmokeParticlesPrefab,
+                    new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                    Quaternion.identity);
+
+                m_SmokeFramesRemaining = m_FramesBetweenSmoke;
             }
         }
     }
