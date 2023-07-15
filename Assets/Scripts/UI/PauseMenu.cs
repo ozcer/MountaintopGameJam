@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static bool gamePaused = false;
+    public bool gamePaused = false;
     public GameObject pauseCanvas;
     public ControllerManager controllerManager;
 
@@ -25,6 +25,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseCanvas.SetActive(true);
         Time.timeScale = 0f;
+
         gamePaused = true;
     }
 }

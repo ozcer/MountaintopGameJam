@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     public float launchPowerMax = 50f;
     public float launchPowerIncrement = 1f;
     private float launchPower = 0f;
+    public bool mouseDown;
+    public bool mouseUp;
 
     [Header("Gliding")]
     public float maxGlideFrames = 1200f;
@@ -79,7 +81,7 @@ public class Player : MonoBehaviour
     public float maxClamp;
     public float clampInterval;
 
-    public ControllerManager controllerManager;
+    private ControllerManager controllerManager;
     
     private void Awake()
     {
@@ -87,6 +89,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         m_SpringJoint = GetComponent<SpringJoint2D>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        controllerManager = FindObjectOfType<ControllerManager>();
 
         launchPower = launchPowerMin;
 
@@ -96,7 +99,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (mouseUp)
         {
             if (m_CurrentHook == null && m_HookPrefab)
             {
@@ -134,13 +137,8 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
 
-        bool mouseDown = Input.GetMouseButton(0);
-        moveHorizontal = controllerManager.currentInputVector.x;
+        moveHorizontal = controllerManager.moveInputVector.x;
 
-        if (Mathf.Abs(moveHorizontal) < 0.01f)
-        {
-            moveHorizontal = 0f;
-        }
 
         Debug.Log(rb.velocity);
 
@@ -323,7 +321,7 @@ public class Player : MonoBehaviour
         }
 
 
-        if(Input.GetMouseButton(0)){
+        if(mouseDown){
             if (mousePositionInWorld.x < transform.position.x){
                 m_SpriteRenderer.flipX = true;
             }

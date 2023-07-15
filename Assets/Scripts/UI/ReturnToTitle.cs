@@ -5,9 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class ReturnToTitle : MonoBehaviour
 {
+    ControllerManager controllerManager;
+
+    private void Awake()
+    {
+        controllerManager = FindObjectOfType<ControllerManager>();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0)) SceneManager.LoadScene(0);
+        if (controllerManager.mouseUp)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }
