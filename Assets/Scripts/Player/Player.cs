@@ -87,8 +87,6 @@ public class Player : MonoBehaviour
 
         glideFramesRemaining = maxGlideFrames;
         originalPosition = transform.position;
-
-        StartCoroutine(QuackCoroutine());
     }
 
     private void Update()
@@ -172,14 +170,11 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        
 
         float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
         Vector2 movement = new Vector2(moveHorizontal, 0); 
-
-
         
         if(!softlockCheckCoroutineRunning)
         {
@@ -191,7 +186,6 @@ public class Player : MonoBehaviour
             else{
             // Applies the force to the Rigidbody2D
                 rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-                
 
                 // Control while on ground
                 if(groundScript.isGrounded) {
@@ -449,25 +443,6 @@ public class Player : MonoBehaviour
                     softlocked = true;
                     softlockCheckCoroutineRunning = false;
                 }
-            }
-        }
-    }
-
-    private IEnumerator QuackCoroutine()
-    {
-        while (true)
-        {
-            int interval = (int) Random.Range(5, 15);
-            yield return new WaitForSeconds(interval);
-
-            int d20 = (int) Random.Range(0, 20);
-            if (d20 == 10)
-            {
-                SoundManager.Instance.PlaySound(Sound.HumanQuack);
-            }
-            else
-            {
-                SoundManager.Instance.PlaySound(Sound.Quack);
             }
         }
     }

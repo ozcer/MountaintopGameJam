@@ -18,22 +18,20 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        //random quacking sounds
+        StartCoroutine(QuackCoroutine());
     }
 
     public void ChangeCameraTarget(Transform newTarget)
     {
-        if (Camera != null)
-        {
-            Camera.m_Follow = newTarget;
-        }
+        if (Camera != null) Camera.m_Follow = newTarget;
     }
 
     public void ResetAndAddTargets(Transform[] targets)
     {
-        if (Camera == null || TargetGroup == null)
-        {
+        if (Camera == null || TargetGroup == null) 
             return;
-        }
 
         Camera.m_Follow = TargetGroup.gameObject.transform;
         Camera.m_LookAt = TargetGroup.gameObject.transform;
@@ -48,10 +46,22 @@ public class GameManager : MonoBehaviour
     public void ResetTargets()
     {
         if (TargetGroup == null)
-        {
             return;
-        }
 
         TargetGroup.m_Targets = new CinemachineTargetGroup.Target[0];
+    }
+
+    private IEnumerator QuackCoroutine()
+    {
+        while (true)
+        {
+            int interval = (int)Random.Range(5, 15);
+            yield return new WaitForSeconds(interval);
+
+            //random int determines if sound is human quack
+            int d20 = (int)Random.Range(0, 20);
+            if (d20 == 10) SoundManager.Instance.PlaySound(Sound.HumanQuack);
+            else SoundManager.Instance.PlaySound(Sound.Quack);
+        }
     }
 }
