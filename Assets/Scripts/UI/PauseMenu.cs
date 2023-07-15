@@ -6,15 +6,12 @@ public class PauseMenu : MonoBehaviour
 {
     public static bool gamePaused = false;
     public GameObject pauseCanvas;
+    public ControllerManager controllerManager;
 
-    // Update is called once per frame
-    void Update()
+    public void PauseInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (gamePaused) ResumeGame();
-            else PauseGame();
-        }
+        if (gamePaused) ResumeGame();
+        else PauseGame();
     }
 
     public void ResumeGame()
