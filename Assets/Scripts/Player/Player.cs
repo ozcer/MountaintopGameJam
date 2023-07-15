@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
 
     [Header("UI")]
     public ChargeBar chargeBar;
-    public bool displayGlideUI = false, displayChargeUI = false;
+    public bool displayGlideUI, displayChargeUI;
 
     [Header("Recall Logic")]
     public bool softlocked = false;
@@ -95,7 +95,6 @@ public class Player : MonoBehaviour
             if (m_CurrentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-                displayChargeUI = false;
             }
             else
             {
@@ -257,6 +256,7 @@ public class Player : MonoBehaviour
         SoundManager.Instance.PlaySound(Sound.Throw);
 
         m_Animator.SetBool("Charging", false);
+        displayChargeUI = false;
 
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 targetPosition = new Vector2(worldPosition.x, worldPosition.y);

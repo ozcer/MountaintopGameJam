@@ -132,7 +132,7 @@ MonoBehaviour:
   useGlideOverride: 0
   glideOverride: 0
   groundScript: {fileID: 8588975878121845067}
-  recentBounce: 0
+  currentClamp: 20
   minClamp: 0
   maxClamp: 0
   clampInterval: 0
@@ -473,7 +473,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2632701520151221670}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -942,7 +942,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8364222606432636104}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
