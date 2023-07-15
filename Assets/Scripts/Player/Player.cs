@@ -107,6 +107,56 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        MouseRelease();
+
+
+        CheatCodes();
+
+        FaceMouse();
+        
+        GlideLogic();
+
+        if (useGlideOverride)
+        {
+            m_Animator.SetBool("Gliding", glideOverride);
+        }
+    }
+
+
+    private void FixedUpdate()
+    {
+        moveHorizontal = controllerManager.moveInputVector.x;
+        aim = controllerManager.aimInputVector;
+
+        ClampPlayerMovement();
+
+        ChargeLogic();
+
+        MovePlayer();
+    }
+
+
+    private void ClampPlayerMovement()
+    {
+
+        //Reduce maximum clamp after a bounce
+        if (currentClamp > minClamp)
+        {
+            currentClamp -= clampInterval;
+        }
+        // Clamp speed
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));
+
+        // If touching hook
+        if (m_MovingToHook && Vector2.Distance((Vector2)m_CurrentHook.transform.position, (Vector2)transform.position) < m_retrieveHookDistance)
+        {
+            touchingHook = true;
+        }
+
+    }
+
+    private void MouseRelease()
+    {
         if (mouseUp || (stickAim && aim == Vector2.zero))
         {
             if (m_CurrentHook == null && m_HookPrefab)
@@ -120,100 +170,21 @@ public class Player : MonoBehaviour
             launchPower = launchPowerMin;
             stickAim = false;
         }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            transform.position = originalPosition;
-            DestroyGrapplingHook();
-            rb.velocity = Vector2.zero;
-        }
-
-        
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            Vector3 newPosition = transform.position + Vector3.up * 10f;
-            transform.position = newPosition;
-        }
-        
-        FaceMouse();
-        
-        GlideLogic();
-
-        if (useGlideOverride)
-        {
-            m_Animator.SetBool("Gliding", glideOverride);
-        }
     }
 
-    private void FixedUpdate()
+    private void MovePlayer()
     {
-        moveHorizontal = controllerManager.moveInputVector.x;
-        aim = controllerManager.aimInputVector;
-
-        //Reduce maximum clamp after a bounce
-        if(currentClamp > minClamp){
-            currentClamp -= clampInterval;
-        }
-        // Clamp speed
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));        
-
-        // If touching hook
-        if (m_MovingToHook && Vector2.Distance((Vector2)m_CurrentHook.transform.position, (Vector2)transform.position) < m_retrieveHookDistance)
-        {
-            touchingHook = true;
-        }
-        
-        if (m_CurrentHook == null)
-        {
-            m_Animator.SetBool("Charging", mouseDown || aim != Vector2.zero);
-
-            if (mouseDown || aim != Vector2.zero)
-            {
-                if (!displayChargeUI) //set mouse down instance to trigger event that can be read by UIHandler
-                {
-                    SoundManager.Instance.PlaySound(Sound.Charge);
-                    displayChargeUI = true;
-                }
-
-                if (launchPower < launchPowerMax)
-                {
-                    launchPower += launchPowerIncrement;
-
-                    chargePercent =  (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
-
-                    chargeBar.SetValue(chargePercent);
-                    
-                }
-                if(aim != Vector2.zero)
-                {
-                    stickAim = true;
-                    if(aim.magnitude > .95)
-                    {
-                        stickSave = aim;
-                    }
-                }
-            }
-        }
-
 
         Vector2 movement = new Vector2(moveHorizontal, 0);
 
         // If hook is below player or wall climbing, disable movement
-        if (softlockCheckCoroutineRunning)
+
+        if (((wallClimbL && rb.velocity.x < 4) && moveHorizontal < 0.1)
+          || ((wallClimbR && rb.velocity.x > -4) && moveHorizontal > 0.1)
+          || softlockCheckCoroutineRunning)
         {
             return;
         }
-
-        if((wallClimbL && rb.velocity.x < 4) && moveHorizontal < 0.1)
-        {
-            return;
-        }
-
-        if((wallClimbR && rb.velocity.x > -4) && moveHorizontal> 0.1)
-        {
-            return;
-        }
-
 
         // Move the player
         rb.AddForce(movement * airSpeed, ForceMode2D.Force);
@@ -240,6 +211,60 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    private void ChargeLogic() 
+    {
+        if (m_CurrentHook == null)
+        {
+            m_Animator.SetBool("Charging", mouseDown || aim != Vector2.zero);
+
+            if (mouseDown || aim != Vector2.zero)
+            {
+                if (!displayChargeUI) //set mouse down instance to trigger event that can be read by UIHandler
+                {
+                    SoundManager.Instance.PlaySound(Sound.Charge);
+                    displayChargeUI = true;
+                }
+
+                if (launchPower < launchPowerMax)
+                {
+                    launchPower += launchPowerIncrement;
+
+                    chargePercent = (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
+
+                    chargeBar.SetValue(chargePercent);
+
+                }
+                if (aim != Vector2.zero)
+                {
+                    stickAim = true;
+                    if (aim.magnitude > .95)
+                    {
+                        stickSave = aim;
+                    }
+                }
+            }
+        }
+    }
+
+    private void CheatCodes()
+    {
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = originalPosition;
+            DestroyGrapplingHook();
+            rb.velocity = Vector2.zero;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Vector3 newPosition = transform.position + Vector3.up * 10f;
+            transform.position = newPosition;
+        }
+    }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
