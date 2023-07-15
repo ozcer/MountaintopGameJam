@@ -18,7 +18,6 @@ public class ControllerManager : MonoBehaviour
 
     public Vector2 aimInputVector;
     [SerializeField] private float smoothInputSpeed = .2f;
-    [SerializeField] private float turnSpeed = .1f;
 
 
     [SerializeField] public float inputDeadzone;        // Options variable

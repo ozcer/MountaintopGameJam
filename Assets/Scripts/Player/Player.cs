@@ -164,7 +164,7 @@ public class Player : MonoBehaviour
         
         if (m_CurrentHook == null)
         {
-            m_Animator.SetBool("Charging", mouseDown);
+            m_Animator.SetBool("Charging", mouseDown || aim != Vector2.zero);
 
             if (mouseDown || aim != Vector2.zero)
             {

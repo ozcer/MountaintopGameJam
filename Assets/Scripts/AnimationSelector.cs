@@ -6,7 +6,7 @@ using UnityEngine;
 public class AnimationSelector : MonoBehaviour
 {
     [SerializeField] Animator animator;
-    [SerializeField] Collider2D collider;
+    [SerializeField] Collider2D myCollider;
     [SerializeField] Rigidbody2D rb;
     public Vector2 jumpForce = new Vector2(0, 10); 
     public float raycastDistance = 0.1f;
@@ -31,6 +31,6 @@ public class AnimationSelector : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Debug.DrawRay(collider.bounds.center + Vector3.down * collider.bounds.extents.y, Vector3.down * raycastDistance, Color.red);
+        Debug.DrawRay(myCollider.bounds.center + Vector3.down * myCollider.bounds.extents.y, Vector3.down * raycastDistance, Color.red);
     }
 }
