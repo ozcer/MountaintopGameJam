@@ -150,7 +150,7 @@ public class ControllerManager : MonoBehaviour
 
         if (Mathf.Abs(rb.velocity.x) > (player.m_MaxSpeed * .75f))
         {
-            moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, 0);
+            moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
         }
         else
         {
@@ -163,9 +163,6 @@ public class ControllerManager : MonoBehaviour
         {
             moveInputVector.x = 0f;
         }
-        if (Mathf.Abs(moveInputVector.y) < 0.01f)
-        {
-            moveInputVector.y = 0f;
-        }
+
     }
 }

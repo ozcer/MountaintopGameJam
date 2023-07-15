@@ -196,13 +196,24 @@ public class Player : MonoBehaviour
         }
 
 
-        Vector2 movement = new Vector2(moveHorizontal, 0); 
-        
+        Vector2 movement = new Vector2(moveHorizontal, 0);
+
         // If hook is below player or wall climbing, disable movement
-        if (softlockCheckCoroutineRunning || ((wallClimbL && rb.velocity.x < 4) || (wallClimbR && rb.velocity.x > -4)))
+        if (softlockCheckCoroutineRunning)
         {
             return;
         }
+
+        if((wallClimbL && rb.velocity.x < 4) && moveHorizontal < 0.1)
+        {
+            return;
+        }
+
+        if((wallClimbR && rb.velocity.x > -4) && moveHorizontal> 0.1)
+        {
+            return;
+        }
+
 
         // Move the player
         rb.AddForce(movement * airSpeed, ForceMode2D.Force);
