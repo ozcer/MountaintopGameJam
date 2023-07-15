@@ -70,7 +70,6 @@ public class Player : MonoBehaviour
 
     [Header("Bounce Timer")]
     [SerializeField]
-    private bool recentBounce = false;
     private float currentClamp = 20f;
     public float minClamp;
     public float maxClamp;
@@ -129,14 +128,11 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Temporarily increases Y clamp max after bouncing off something
-        if(recentBounce){
+        //Reduce maximum clamp after a bounce
+        if(currentClamp > minClamp){
             currentClamp -= clampInterval;
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, currentClamp);
-            if(currentClamp <= minClamp){
-                recentBounce = false;
-            }
         }
+
         // Clamp speed
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));        
 
@@ -246,7 +242,6 @@ public class Player : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
         {
             SoundManager.Instance.PlaySound(Sound.BouncyHit);
-            recentBounce = true;
             currentClamp = maxClamp;
         }
 
