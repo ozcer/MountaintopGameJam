@@ -49,6 +49,7 @@ public class ControllerManager : MonoBehaviour
         var pMove = playerControls.Player.Move;
         var pAim = playerControls.Player.Aim;
         var fire = playerControls.Player.Fire;
+        var glide = playerControls.Player.Glide;
 
         playerControls.Player.Pause.performed += ctx => pauseMenu.PauseInput();
 
@@ -66,6 +67,9 @@ public class ControllerManager : MonoBehaviour
             // Click
             fire.performed += ctx => Confirm();
 
+            glide.performed += ctx => Glide(true);
+            glide.canceled += ctx => Glide(false);
+
             if (fire.WasReleasedThisFrame() && mouseDown && !pauseBuffer)
             {
                 player.mouseUp = true;
@@ -78,6 +82,8 @@ public class ControllerManager : MonoBehaviour
                 player.mouseUp = false;
                 pauseBuffer = false;
             }
+
+
 
             // Pause
         }
@@ -109,6 +115,11 @@ public class ControllerManager : MonoBehaviour
 
     private void Cancel()
     {
+    }
+
+    private void Glide(bool gliding)
+    {
+        player.glideButton = gliding;
     }
 
 

@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     public float glideFramesRemaining;
     public bool glideDepleted = false;
     public bool gliding = false;
+    public bool glideButton;
 
     [Header("UI")]
     public float chargePercent;
@@ -370,16 +371,26 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (Input.GetButton("Jump") && !glideDepleted) //set glide instance to trigger event that can be read by UIHandler
+        if (glideFramesRemaining < maxGlideFrames)
+        {
+            displayGlideUI = true;
+        }
+        else
+        {
+            displayGlideUI = false;
+        }
+
+        if (glideButton && !glideDepleted) //set glide instance to trigger event that can be read by UIHandler
         {
             m_FeatherParticles?.StartParticleSystem();
 
             m_Animator.SetBool("Gliding", true);
-            displayGlideUI = true;
 
             if (rb.velocity.y < -1)
             {
-                rb.velocity = new Vector2(rb.velocity.x, -1);
+                float targetVelocityY = -2f;
+                float newVelocityY = Mathf.MoveTowards(rb.velocity.y, targetVelocityY, Time.deltaTime * 50f);
+                rb.velocity = new Vector2(rb.velocity.x, newVelocityY);
             }
 
             if (glideFramesRemaining % 200 == 0)
@@ -399,7 +410,6 @@ public class Player : MonoBehaviour
             m_FeatherParticles?.StopParticleSystem();
 
             m_Animator.SetBool("Gliding", false);
-            displayGlideUI = false;
 
             if (glideFramesRemaining < maxGlideFrames)
             {
