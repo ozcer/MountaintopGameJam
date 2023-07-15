@@ -22,14 +22,13 @@ public class Player : MonoBehaviour
     public float speed = 10.0f;
 
     [SerializeField]
-    private float m_MaxSpeed = 20f;
+    public float m_MaxSpeed = 20f;
     private float moveHorizontal;
     private bool m_MovingToHook = false;
     
     [SerializeField]
     private float m_retrieveHookDistance = 1f;
 
-    [SerializeField] private LayerMask platformLayer;
     
     [Header("Charging")]
     public float launchPowerMin = 10f;
@@ -125,6 +124,8 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             transform.position = originalPosition;
+            DestroyGrapplingHook();
+            rb.velocity = Vector2.zero;
         }
 
         
