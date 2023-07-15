@@ -51,7 +51,6 @@ public class Player : MonoBehaviour
     private bool wallClimb = false;
     private bool wallClimbL = false;
     private bool wallClimbR = false;
-    private bool left;
 
     private Vector3 originalPosition;
 
@@ -140,12 +139,9 @@ public class Player : MonoBehaviour
         // Clamp speed
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));        
 
-        if (m_MovingToHook)
+        if (m_MovingToHook && Vector2.Distance((Vector2)m_CurrentHook.transform.position, (Vector2)transform.position) < m_retrieveHookDistance)
         {
-            if (Vector2.Distance((Vector2) m_CurrentHook.transform.position, (Vector2) transform.position) < m_retrieveHookDistance)
-            {
-                touchingHook = true;
-            }
+            touchingHook = true;
         }
         
         bool mouseDown = Input.GetMouseButton(0);
@@ -155,7 +151,7 @@ public class Player : MonoBehaviour
 
             if (mouseDown)
             {
-                if (!displayChargeUI)
+                if (!displayChargeUI) //set mouse down instance to trigger event that can be read by UIHandler
                 {
                     SoundManager.Instance.PlaySound(Sound.Charge);
                     displayChargeUI = true;
@@ -176,16 +172,16 @@ public class Player : MonoBehaviour
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
         Vector2 movement = new Vector2(moveHorizontal, 0); 
         
-        if(!softlockCheckCoroutineRunning)
+        if(!softlockCheckCoroutineRunning) //this needs to be a new state
         {
-        // Only do the following if both of these statements are false, awful code
-            if(wallClimbL && rb.velocity.x < 4)
-            {}
-            else if(wallClimbR && rb.velocity.x > -4)
-            {}
-            else{
-            // Applies the force to the Rigidbody2D
-                rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+            // Only do the following if both of these statements are false, awful code
+            if (wallClimbL && rb.velocity.x < 4)
+            { }
+            else if (wallClimbR && rb.velocity.x > -4)
+            { }
+            else
+            {
+                rb.AddForce(movement * airSpeed, ForceMode2D.Force); // Applies the force to the Rigidbody2D
 
                 // Control while on ground
                 if(groundScript.isGrounded) {
@@ -195,15 +191,14 @@ public class Player : MonoBehaviour
                     if (moveHorizontal != 0)
                     {
                         m_SmokeFramesRemaining -= 1;
-                        if (m_SmokeFramesRemaining <= 0)
+                        if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
                         {
-                            if (m_SmokeParticlesPrefab != null)
-                                Instantiate(
-                                    m_SmokeParticlesPrefab,
-                                    new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                                    Quaternion.identity
+                            Instantiate(
+                                m_SmokeParticlesPrefab,
+                                new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                                Quaternion.identity
                                 );
-
+                            
                             m_SmokeFramesRemaining = m_FramesBetweenSmoke;
                         }
                     }
@@ -214,15 +209,13 @@ public class Player : MonoBehaviour
 
                 else{
                     // Avoids going above 10 speed in either direction
-                    if(moveHorizontal > 0){
-                        if(rb.velocity.x < 10){
-                            rb.AddForce(movement * 40f, ForceMode2D.Force);
-                        }
+                    if(moveHorizontal > 0 && rb.velocity.x < 10)
+                    {
+                        rb.AddForce(movement * 40f, ForceMode2D.Force);
                     }
-                    else if(moveHorizontal < 0){
-                        if(rb.velocity.x > -10){
-                            rb.AddForce(movement * 40f, ForceMode2D.Force);
-                        }
+                    else if(moveHorizontal < 0 && rb.velocity.x > -10)
+                    {
+                        rb.AddForce(movement * 40f, ForceMode2D.Force);
                     }
                 }
             }
@@ -267,8 +260,6 @@ public class Player : MonoBehaviour
             wallClimbR = false;
         }
     }
-
-    
 
     private void LaunchGrapplingHook(float power)
     {
@@ -343,12 +334,9 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (Input.GetButton("Jump") && !glideDepleted)
+        if (Input.GetButton("Jump") && !glideDepleted) //set glide instance to trigger event that can be read by UIHandler
         {
-            if (m_FeatherParticles != null)
-            {
-                m_FeatherParticles.StartParticleSystem();
-            }
+            m_FeatherParticles?.StartParticleSystem();
 
             m_Animator.SetBool("Gliding", true);
             displayGlideUI = true;
@@ -372,10 +360,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (m_FeatherParticles != null)
-            {
-                m_FeatherParticles.StopParticleSystem();
-            }
+            m_FeatherParticles?.StopParticleSystem();
 
             m_Animator.SetBool("Gliding", false);
             displayGlideUI = false;
@@ -393,27 +378,15 @@ public class Player : MonoBehaviour
 
     private void RecallLogic()
     {
-        if (m_MovingToHook)
-        {
-            if (touchingHook)
-            {
-                DestroyGrapplingHook();
-            }
-            else
-            {
-                if (m_CurrentHook.transform.position.y >= transform.position.y || softlocked)
-                {
-                    DestroyGrapplingHook();
-                }
-            }
-        }
-        else
+        if (!m_MovingToHook)
         {
             Hook hook = m_CurrentHook.GetComponent<Hook>();
             if (hook.CanRecall())
-            {
                 DestroyGrapplingHook();
-            }
+        }
+        else if (touchingHook || m_CurrentHook.transform.position.y >= transform.position.y || softlocked)
+        {
+            DestroyGrapplingHook();
         }
     }
 
