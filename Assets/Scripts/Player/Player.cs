@@ -109,17 +109,11 @@ public class Player : MonoBehaviour
     {
         MouseRelease();
 
-
         CheatCodes();
 
         FaceMouse();
         
         GlideLogic();
-
-        if (useGlideOverride)
-        {
-            m_Animator.SetBool("Gliding", glideOverride);
-        }
     }
 
 
@@ -152,7 +146,6 @@ public class Player : MonoBehaviour
         {
             touchingHook = true;
         }
-
     }
 
     private void MouseRelease()
@@ -456,6 +449,12 @@ public class Player : MonoBehaviour
                     glideDepleted = false;
                 }
             }
+        }
+
+
+        if (useGlideOverride)
+        {
+            m_Animator.SetBool("Gliding", glideOverride);
         }
     }
 
