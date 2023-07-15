@@ -127,20 +127,22 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        bool mouseDown = Input.GetMouseButton(0);
+        float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
+
         //Reduce maximum clamp after a bounce
         if(currentClamp > minClamp){
             currentClamp -= clampInterval;
         }
-
         // Clamp speed
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));        
 
+        // If touching hook
         if (m_MovingToHook && Vector2.Distance((Vector2)m_CurrentHook.transform.position, (Vector2)transform.position) < m_retrieveHookDistance)
         {
             touchingHook = true;
         }
         
-        bool mouseDown = Input.GetMouseButton(0);
         if (m_CurrentHook == null)
         {
             m_Animator.SetBool("Charging", mouseDown);
@@ -163,57 +165,58 @@ public class Player : MonoBehaviour
             }
         }
 
-        float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
         Vector2 movement = new Vector2(moveHorizontal, 0); 
         
-        if(!softlockCheckCoroutineRunning) //this needs to be a new state
+        // If hook is below player, disable movement
+        if (softlockCheckCoroutineRunning)
         {
-            // Only do the following if both of these statements are false, awful code
-            if (wallClimbL && rb.velocity.x < 4)
-            { }
-            else if (wallClimbR && rb.velocity.x > -4)
-            { }
-            else
+            return;
+        }
+
+        if ((wallClimbL && rb.velocity.x < 4) || (wallClimbR && rb.velocity.x > -4))
+        {
+            return;
+        }
+
+        // Move the player
+        rb.AddForce(movement * airSpeed, ForceMode2D.Force);
+
+        // If on the ground
+        if (groundScript.isGrounded)
+        {
+            // Ignore current player velocity and overwrite velocity with snap turning
+            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+
+            // If moving, smoke particles
+            if (moveHorizontal != 0)
             {
-                rb.AddForce(movement * airSpeed, ForceMode2D.Force); // Applies the force to the Rigidbody2D
+                m_SmokeFramesRemaining -= 1;
 
-                // Control while on ground
-                if(groundScript.isGrounded) {
-                    // Ignore current player velocity and overwrite, snap turning
-                    rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
+                if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
+                {
+                    Instantiate(
+                        m_SmokeParticlesPrefab,
+                        new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                        Quaternion.identity
+                    );
 
-                    if (moveHorizontal != 0)
-                    {
-                        m_SmokeFramesRemaining -= 1;
-                        if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
-                        {
-                            Instantiate(
-                                m_SmokeParticlesPrefab,
-                                new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                                Quaternion.identity
-                                );
-                            
-                            m_SmokeFramesRemaining = m_FramesBetweenSmoke;
-                        }
-                    }
+                    m_SmokeFramesRemaining = m_FramesBetweenSmoke;
                 }
-
-                // If in the air
-                // Additive movement, slow turn
-
-                else{
-                    // Avoids going above 10 speed in either direction
-                    if(moveHorizontal > 0 && rb.velocity.x < 10)
-                    {
-                        rb.AddForce(movement * 40f, ForceMode2D.Force);
-                    }
-                    else if(moveHorizontal < 0 && rb.velocity.x > -10)
-                    {
-                        rb.AddForce(movement * 40f, ForceMode2D.Force);
-                    }
-                }
+            }
+        }
+        
+        else
+        {
+            // Avoids going above 10 speed in either direction
+            if (moveHorizontal > 0 && rb.velocity.x < 10)
+            {
+                rb.AddForce(movement * 40f, ForceMode2D.Force);
+            }
+            else if (moveHorizontal < 0 && rb.velocity.x > -10)
+            {
+                rb.AddForce(movement * 40f, ForceMode2D.Force);
             }
         }
     }
