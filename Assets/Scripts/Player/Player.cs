@@ -40,8 +40,8 @@ public class Player : MonoBehaviour
     public bool gliding = false;
 
     [Header("UI")]
-    public GameObject canvasObject;
     public ChargeBar chargeBar;
+    public bool displayGlideUI = false, displayChargeUI = false;
 
     [Header("Recall Logic")]
     public bool softlocked = false;
@@ -98,7 +98,7 @@ public class Player : MonoBehaviour
             if (m_CurrentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-                canvasObject.SetActive(false);
+                displayChargeUI = false;
             }
             else
             {
@@ -154,12 +154,13 @@ public class Player : MonoBehaviour
         if (m_CurrentHook == null)
         {
             m_Animator.SetBool("Charging", mouseDown);
+
             if (mouseDown)
             {
-                if (!canvasObject.activeSelf)
+                if (!displayChargeUI)
                 {
                     SoundManager.Instance.PlaySound(Sound.Charge);
-                    canvasObject.SetActive(true);
+                    displayChargeUI = true;
                 }
 
                 if (launchPower < launchPowerMax)
@@ -176,7 +177,7 @@ public class Player : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal"); // Gets input from 'A' and 'D'
 
         // Creates a new Vector2 where x is determined by 'A' or 'D' input
-        Vector2 movement = new Vector2(moveHorizontal, 0);
+        Vector2 movement = new Vector2(moveHorizontal, 0); 
 
 
         
@@ -356,6 +357,8 @@ public class Player : MonoBehaviour
             }
 
             m_Animator.SetBool("Gliding", true);
+            displayGlideUI = true;
+
             if (rb.velocity.y < -1)
             {
                 rb.velocity = new Vector2(rb.velocity.x, -1);
@@ -365,6 +368,7 @@ public class Player : MonoBehaviour
             {
                 SoundManager.Instance.PlaySound(Sound.Flap, 2f);
             }
+
             glideFramesRemaining -= 1;
 
             if (glideFramesRemaining <= 0)
@@ -380,6 +384,8 @@ public class Player : MonoBehaviour
             }
 
             m_Animator.SetBool("Gliding", false);
+            displayGlideUI = false;
+
             if (glideFramesRemaining < maxGlideFrames)
             {
                 glideFramesRemaining += 1;
