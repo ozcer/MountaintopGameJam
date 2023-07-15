@@ -35,11 +35,11 @@ public class UIHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.displayGlideUI) StartCoroutine(FadeCanvasCoroutine(glideCG, 0.1f, true));
-        else StartCoroutine(FadeCanvasCoroutine(glideCG, 0.1f, false));
+        if (player.displayGlideUI) glideCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(glideCG, 0.05f, true));
+        else glideCG.gameObject.SetActive(false); //StartCoroutine(FadeCanvasCoroutine(glideCG, 0.25f, false));
 
-        if (player.displayChargeUI) StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.1f, true));
-        else StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.1f, false));
+        if (player.displayChargeUI) chargeCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.05f, true));
+        else chargeCG.gameObject.SetActive(false); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.25f, false));
 
         //timer 
         setTimerText();
