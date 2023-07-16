@@ -148,7 +148,7 @@ public class ControllerManager : MonoBehaviour
             input = Vector2.zero;
         }
 
-        if (Mathf.Abs(rb.velocity.x) > (player.m_MaxSpeed * .75f))
+        if (Mathf.Abs(rb.velocity.x) > (player.maxSpeed * .75f))
         {
             moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
         }
@@ -157,12 +157,10 @@ public class ControllerManager : MonoBehaviour
             moveInputVector = Vector2.SmoothDamp(moveInputVector, input, ref smoothInputVelocity, smoothInputSpeed);
         }
 
-
         // Controller will never return to 0 unless we set it
         if (Mathf.Abs(moveInputVector.x) < 0.01f)
         {
             moveInputVector.x = 0f;
         }
-
     }
 }
