@@ -26,12 +26,8 @@ public class Player : MonoBehaviour
     public bool mouseDown;
     public bool mouseUp;
 
-    public bool invertDirection = false;    // Change in options
+    public bool invertDirection = false;    // Shoots opposite to mouse, Change in options
 
-    [Header("Gliding")]
-    public float maxGlideFrames = 1200f;
-    public float glideFramesRemaining;
-    public bool glideButton;
 
     [Header("UI")]
     public float chargePercent;
@@ -63,7 +59,6 @@ public class Player : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         playerGrappling = GetComponent<PlayerGrappling>();
 
-        glideFramesRemaining = maxGlideFrames;
         originalPosition = transform.position;
     }
 

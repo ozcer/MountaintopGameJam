@@ -21,7 +21,7 @@ public class ControllerManager : MonoBehaviour
 
 
     [SerializeField] public float inputDeadzone;        // Options variable
-
+    public PlayerMovement playerMovement;
 
     public PauseMenu pauseMenu;
     public Player player;
@@ -118,7 +118,7 @@ public class ControllerManager : MonoBehaviour
 
     private void Glide(bool gliding)
     {
-        player.glideButton = gliding;
+        playerMovement.glideButton = gliding;
     }
 
 

@@ -18,6 +18,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private CanvasGroup glideCG;
     [SerializeField] private Image bulletTime;
     public float bulletTimeAmount = 100f, drainSpeed = 1f, refillSpeed = 0.5f;
+    public PlayerMovement playerMovement;
 
     [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
@@ -62,7 +63,7 @@ public class UIHandler : MonoBehaviour
         setDistanceText();
 
         //bullet time
-        bulletTime.fillAmount = player.glideFramesRemaining / player.maxGlideFrames;
+        bulletTime.fillAmount = playerMovement.glideFramesRemaining / playerMovement.maxGlideFrames;
     }
 
     private void setTimerText()

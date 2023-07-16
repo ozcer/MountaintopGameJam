@@ -22,11 +22,19 @@ public class PlayerMovement : MonoBehaviour
     public float maxClamp = 40f;
     public float clampInterval = 0.3f;
 
+
+    [Header("Gliding")]
+    public float maxGlideFrames = 1200f;
+    public float glideFramesRemaining;
+    public bool glideButton;
+    public float glideFallSpeed = -3f;
+
     public bool glideDepleted = false;
     public bool useGlideOverride = false;
     public bool glideOverride = false;
 
     public FeatherParticles featherParticles;
+    public GroundCheck groundScript;
 
     public GameObject smokeParticlesPrefab;
     private int smokeFramesInterval = 10;
@@ -38,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GetComponent<Player>();
         controllerManager = FindObjectOfType<ControllerManager>();
+        glideFramesRemaining = maxGlideFrames;
     }
 
     public void MovementUpdate()
@@ -111,37 +120,36 @@ public class PlayerMovement : MonoBehaviour
         if (player.movingToHook)
             return;
 
-        player.displayGlideUI = (player.glideFramesRemaining < player.maxGlideFrames);
+        player.displayGlideUI = (glideFramesRemaining < maxGlideFrames);
 
-        if (player.glideButton && !glideDepleted) //set glide instance to trigger event that can be read by UIHandler
+        if (glideButton && !glideDepleted && !groundScript.playerIsGrounded) //set glide instance to trigger event that can be read by UIHandler
         {
             featherParticles?.StartParticleSystem();
             animator.SetBool("Gliding", true);
 
             if (rb.velocity.y < -1)
             {
-                float targetVelocityY = -2f;
-                float newVelocityY = Mathf.MoveTowards(rb.velocity.y, targetVelocityY, Time.deltaTime * 50f);
+                float newVelocityY = Mathf.MoveTowards(rb.velocity.y, glideFallSpeed, Time.deltaTime * 50f);
                 rb.velocity = new Vector2(rb.velocity.x, newVelocityY);
             }
 
-            if (player.glideFramesRemaining % 200 == 0)
+            if (glideFramesRemaining % 200 == 0)
             {
                 SoundManager.Instance.PlaySound(Sound.Flap, 2f);
             }
 
-            player.glideFramesRemaining -= 1;
-            glideDepleted = (player.glideFramesRemaining <= 0); 
+            glideFramesRemaining -= 1;
+            glideDepleted = (glideFramesRemaining <= 0); 
         }
         else
         {
             featherParticles?.StopParticleSystem();
             animator.SetBool("Gliding", false);
 
-            if (player.glideFramesRemaining < player.maxGlideFrames)
+            if (glideFramesRemaining < maxGlideFrames)
             {
-                player.glideFramesRemaining += 1;
-                glideDepleted = (player.glideFramesRemaining >= player.maxGlideFrames) ? false : glideDepleted;
+                glideFramesRemaining += 1;
+                glideDepleted = (glideFramesRemaining >= maxGlideFrames) ? false : glideDepleted;
             }
         }
 
