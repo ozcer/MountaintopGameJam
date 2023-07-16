@@ -108,7 +108,7 @@ MonoBehaviour:
   speed: 10
   m_MaxSpeed: 10
   m_LaunchPower: 30
-  m_retrieveHookDistance: 2
+  retriveHookDistance: 2
   launchPowerMin: 10
   launchPowerMax: 50
   launchPowerIncrement: 1

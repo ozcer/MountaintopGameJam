@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     
     [SerializeField]
     private GameObject m_HookPrefab;
-    private GameObject m_CurrentHook;
+    public GameObject currentHook;
 
     [SerializeField]
     public float airSpeed = 26f;
@@ -21,14 +21,11 @@ public class Player : MonoBehaviour
     public bool extraControl = false;
     public float speed = 10.0f;
 
-    [SerializeField]
     public float m_MaxSpeed = 20f;
-    private float moveHorizontal;
-    private bool m_MovingToHook = false;
+    public float moveHorizontal;
+    public bool movingToHook = false;
     
-    [SerializeField]
-    private float m_retrieveHookDistance = 1f;
-
+    public float retriveHookDistance = 1f;
     
     [Header("Charging")]
     public float launchPowerMin = 10f;
@@ -109,11 +106,8 @@ public class Player : MonoBehaviour
     {
         MouseRelease();
 
-
         CheatCodes();
-
         FaceMouse();
-        
         GlideLogic();
 
         if (useGlideOverride)
@@ -129,16 +123,13 @@ public class Player : MonoBehaviour
         aim = controllerManager.aimInputVector;
 
         ClampPlayerMovement();
-
         ChargeLogic();
-
         MovePlayer();
     }
 
 
     private void ClampPlayerMovement()
     {
-
         //Reduce maximum clamp after a bounce
         if (currentClamp > minClamp)
         {
@@ -148,18 +139,17 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));
 
         // If touching hook
-        if (m_MovingToHook && Vector2.Distance((Vector2)m_CurrentHook.transform.position, (Vector2)transform.position) < m_retrieveHookDistance)
+        if (movingToHook && Vector2.Distance((Vector2)currentHook.transform.position, (Vector2)transform.position) < retriveHookDistance)
         {
             touchingHook = true;
         }
-
     }
 
     private void MouseRelease()
     {
         if (mouseUp || (stickAim && aim == Vector2.zero))
         {
-            if (m_CurrentHook == null && m_HookPrefab)
+            if (currentHook == null && m_HookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
             }
@@ -214,7 +204,7 @@ public class Player : MonoBehaviour
 
     private void ChargeLogic() 
     {
-        if (m_CurrentHook == null)
+        if (currentHook == null)
         {
             m_Animator.SetBool("Charging", mouseDown || aim != Vector2.zero);
 
@@ -249,14 +239,12 @@ public class Player : MonoBehaviour
 
     private void CheatCodes()
     {
-
         if (Input.GetKeyDown(KeyCode.R))
         {
             transform.position = originalPosition;
             DestroyGrapplingHook();
             rb.velocity = Vector2.zero;
         }
-
 
         if (Input.GetKeyDown(KeyCode.U))
         {
@@ -281,7 +269,6 @@ public class Player : MonoBehaviour
             SoundManager.Instance.PlaySound(Sound.BouncyHit);
             currentClamp = maxClamp;
         }
-
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -334,7 +321,7 @@ public class Player : MonoBehaviour
         hook.Launch(fireVector, power);
         
 
-        m_CurrentHook = hookObject;
+        currentHook = hookObject;
         GameManager.Instance.ChangeCameraTarget(hookObject.transform);
     }
 
@@ -343,10 +330,10 @@ public class Player : MonoBehaviour
         GameManager.Instance.ChangeCameraTarget(transform);
 
         m_SpringJoint.connectedBody = rb;
-        m_MovingToHook = false;
+        movingToHook = false;
 
-        Destroy(m_CurrentHook);
-        m_CurrentHook = null;
+        Destroy(currentHook);
+        currentHook = null;
 
         touchingHook = false;
         softlocked = false;
@@ -383,7 +370,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void SmokeEffect()
+    public void SmokeEffect()
     {
         if (moveHorizontal != 0)
         {
@@ -403,7 +390,7 @@ public class Player : MonoBehaviour
 
     private void GlideLogic()
     {
-        if (m_MovingToHook)
+        if (movingToHook)
         {
             return;
         }
@@ -461,13 +448,13 @@ public class Player : MonoBehaviour
 
     private void RecallLogic()
     {
-        if (!m_MovingToHook)
+        if (!movingToHook)
         {
-            Hook hook = m_CurrentHook.GetComponent<Hook>();
+            Hook hook = currentHook.GetComponent<Hook>();
             if (hook.CanRecall())
                 DestroyGrapplingHook();
         }
-        else if (touchingHook || m_CurrentHook.transform.position.y >= transform.position.y || softlocked)
+        else if (touchingHook || currentHook.transform.position.y >= transform.position.y || softlocked)
         {
             DestroyGrapplingHook();
         }
@@ -476,9 +463,9 @@ public class Player : MonoBehaviour
     public void MoveToHook()
     {
         GameManager.Instance.ChangeCameraTarget(transform);
-        m_SpringJoint.connectedBody = m_CurrentHook.GetComponent<Rigidbody2D>();
+        m_SpringJoint.connectedBody = currentHook.GetComponent<Rigidbody2D>();
 
-        m_MovingToHook = true;
+        movingToHook = true;
 
         softlockCheckCoroutineRunning = true;
         StartCoroutine(SoftlockCheckCoroutine());

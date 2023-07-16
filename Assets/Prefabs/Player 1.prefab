@@ -113,7 +113,7 @@ MonoBehaviour:
   extraControl: 0
   speed: 10
   m_MaxSpeed: 10
-  m_retrieveHookDistance: 2
+  retriveHookDistance: 2
   platformLayer:
     serializedVersion: 2
     m_Bits: 0
