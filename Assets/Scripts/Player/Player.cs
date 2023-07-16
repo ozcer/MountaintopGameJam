@@ -7,96 +7,61 @@ public class Player : MonoBehaviour
 {
     private Animator m_Animator;
     private Rigidbody2D rb;
-    private SpringJoint2D m_SpringJoint;
+    public SpringJoint2D springJoint;
     private SpriteRenderer m_SpriteRenderer;
+
+    public PlayerMovement playerMovement;
+    public PlayerGrappling playerGrappling;
     public AnimationSelector animationSelector;
     
-    [SerializeField]
-    private GameObject m_HookPrefab;
     public GameObject currentHook;
 
-    [SerializeField]
-    public float airSpeed = 26f;
-    public float airControl = 10f;
-    public bool extraControl = false;
-    public float speed = 10.0f;
-
-    public float m_MaxSpeed = 20f;
+    public float maxSpeed = 20f;
     public float moveHorizontal;
     public bool movingToHook = false;
     
     public float retriveHookDistance = 1f;
     
     [Header("Charging")]
-    public float launchPowerMin = 10f;
-    public float launchPowerMax = 50f;
-    public float launchPowerIncrement = 1f;
-    private float launchPower = 0f;
     public bool mouseDown;
     public bool mouseUp;
 
-    private Vector2 aim;
     public bool invertDirection = false;    // Change in options
 
     [Header("Gliding")]
     public float maxGlideFrames = 1200f;
     public float glideFramesRemaining;
-    public bool glideDepleted = false;
-    public bool gliding = false;
     public bool glideButton;
 
     [Header("UI")]
     public float chargePercent;
-    public ChargeBar chargeBar;
     public bool displayGlideUI, displayChargeUI;
 
     [Header("Recall Logic")]
     public bool softlocked = false;
     public bool softlockCheckCoroutineRunning = false;
     public bool touchingHook = false;
-    
-    private bool wallClimbL = false;
-    private bool wallClimbR = false;
 
     private Vector3 originalPosition;
-
-    [SerializeField]
-    private FeatherParticles m_FeatherParticles;
-
-    [SerializeField]
-    private GameObject m_SmokeParticlesPrefab;
-    private int m_FramesBetweenSmoke = 10;
-    private int m_SmokeFramesRemaining = 10;
-    
-    public bool useGlideOverride = false;
-    public bool glideOverride = false;
 
     public GroundCheck groundScript;
 
     public bool stickAim;
     private Vector2 stickSave;
-    
-
-    [Header("Bounce Timer")]
-    [SerializeField]
-    private float currentClamp = 20f;
-    public float minClamp;
-    public float maxClamp;
-    public float clampInterval;
 
     public PauseMenu pauseMenu;
-
     private ControllerManager controllerManager;
     
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        m_SpringJoint = GetComponent<SpringJoint2D>();
+        springJoint = GetComponent<SpringJoint2D>();
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         controllerManager = FindObjectOfType<ControllerManager>();
 
-        launchPower = launchPowerMin;
+        playerMovement = GetComponent<PlayerMovement>();
+        playerGrappling = GetComponent<PlayerGrappling>();
 
         glideFramesRemaining = maxGlideFrames;
         originalPosition = transform.position;
@@ -104,137 +69,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        MouseRelease();
-
         CheatCodes();
         FaceMouse();
-        GlideLogic();
 
-        if (useGlideOverride)
-        {
-            m_Animator.SetBool("Gliding", glideOverride);
-        }
+        playerMovement.MovementUpdate();
+        playerGrappling.GrapplingUpdate();
     }
-
 
     private void FixedUpdate()
     {
         moveHorizontal = controllerManager.moveInputVector.x;
-        aim = controllerManager.aimInputVector;
 
-        ClampPlayerMovement();
-        ChargeLogic();
-        MovePlayer();
-    }
-
-
-    private void ClampPlayerMovement()
-    {
-        //Reduce maximum clamp after a bounce
-        if (currentClamp > minClamp)
-        {
-            currentClamp -= clampInterval;
-        }
-        // Clamp speed
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -m_MaxSpeed, m_MaxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));
-
-        // If touching hook
-        if (movingToHook && Vector2.Distance((Vector2)currentHook.transform.position, (Vector2)transform.position) < retriveHookDistance)
-        {
-            touchingHook = true;
-        }
-    }
-
-    private void MouseRelease()
-    {
-        if (mouseUp || (stickAim && aim == Vector2.zero))
-        {
-            if (currentHook == null && m_HookPrefab)
-            {
-                LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
-            }
-            else
-            {
-                RecallLogic();
-            }
-            launchPower = launchPowerMin;
-            stickAim = false;
-        }
-    }
-
-    private void MovePlayer()
-    {
-
-        Vector2 movement = new Vector2(moveHorizontal, 0);
-
-        // If hook is below player or wall climbing, disable movement
-
-        if (((wallClimbL && rb.velocity.x < 4) && moveHorizontal < 0.1)
-          || ((wallClimbR && rb.velocity.x > -4) && moveHorizontal > 0.1)
-          || softlockCheckCoroutineRunning)
-        {
-            return;
-        }
-
-        // Move the player
-        rb.AddForce(movement * airSpeed, ForceMode2D.Force);
-
-        if (groundScript.playerIsGrounded)
-        {
-            // Overwrite player velocity, IE snap turning
-            rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-            SmokeEffect();
-        }
-
-        // Add more air control
-        else
-        {
-            // Add more control while speed is less than 10
-
-            if (moveHorizontal > 0 && rb.velocity.x < 10)
-            {
-                rb.AddForce(movement * airControl, ForceMode2D.Force);
-            }
-            else if (moveHorizontal < 0 && rb.velocity.x > -10)
-            {
-                rb.AddForce(movement * airControl, ForceMode2D.Force);
-            }
-        }
-    }
-
-    private void ChargeLogic() 
-    {
-        if (currentHook == null)
-        {
-            m_Animator.SetBool("Charging", mouseDown || aim != Vector2.zero);
-
-            if (mouseDown || aim != Vector2.zero)
-            {
-                if (!displayChargeUI) //set mouse down instance to trigger event that can be read by UIHandler
-                {
-                    SoundManager.Instance.PlaySound(Sound.Charge);
-                    displayChargeUI = true;
-                }
-
-                if (launchPower < launchPowerMax)
-                {
-                    launchPower += launchPowerIncrement;
-
-                    chargePercent = (launchPower - launchPowerMin) / (launchPowerMax - launchPowerMin);
-
-                    chargeBar.SetValue(chargePercent);
-
-                }
-                if (aim != Vector2.zero)
-                {
-                    stickAim = true;
-                    if (aim.magnitude > .95)
-                    {
-                        stickSave = aim;
-                    }
-                }
-            }
-        }
+        playerMovement.MovementFixedUpdate();
+        playerGrappling.GrapplingFixedUpdate();
     }
 
     private void CheatCodes()
@@ -242,7 +89,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             transform.position = originalPosition;
-            DestroyGrapplingHook();
+            playerGrappling.DestroyGrapplingHook();
             rb.velocity = Vector2.zero;
         }
 
@@ -253,217 +100,26 @@ public class Player : MonoBehaviour
         }
     }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("WallL"))
-        {
-            wallClimbL = true;
-        }
-        if (collision.gameObject.CompareTag("WallR"))
-        {
-            wallClimbR = true;
-        }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
-        {
-            SoundManager.Instance.PlaySound(Sound.BouncyHit);
-            currentClamp = maxClamp;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("WallL"))
-        {
-            wallClimbL = false;
-        }
-        if (collision.gameObject.CompareTag("WallR"))
-        {
-            wallClimbR = false;
-        }
-    }
-
-    private void LaunchGrapplingHook(float power)
-    {
-        SoundManager.Instance.PlaySound(Sound.Throw);
-
-        m_Animator.SetBool("Charging", false);
-        displayChargeUI = false;
-
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 targetPosition = new Vector2(worldPosition.x, worldPosition.y);
-
-        Vector2 difference = targetPosition - (Vector2) transform.position;
-        float angle = Vector2.Angle(Vector2.up, difference);
-
-
-        angle = (worldPosition.x > transform.position.x) ? -angle : angle;
-
-        Vector2 unitVector = Vector2.up;
-        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-
-        Vector2 fireVector = rotation * unitVector;
-
-        if (stickAim)
-        {
-            fireVector = stickSave;
-        }
-
-        if (invertDirection)
-        {
-            fireVector *= -1f; // Invert the fireVector in the Y direction if invertDirection is true
-        }
-
-        GameObject hookObject = Instantiate(m_HookPrefab, transform.position, Quaternion.identity);
-
-        Hook hook = hookObject.GetComponent<Hook>();
-        hook.Player = this;
-        hook.Launch(fireVector, power);
-        
-
-        currentHook = hookObject;
-        GameManager.Instance.ChangeCameraTarget(hookObject.transform);
-    }
-
-    private void DestroyGrapplingHook()
-    {
-        GameManager.Instance.ChangeCameraTarget(transform);
-
-        m_SpringJoint.connectedBody = rb;
-        movingToHook = false;
-
-        Destroy(currentHook);
-        currentHook = null;
-
-        touchingHook = false;
-        softlocked = false;
-        softlockCheckCoroutineRunning = false;
-        touchingHook = false;
-    }
-
     private void FaceMouse()
     {
         if (pauseMenu.gamePaused) return;
 
-        Vector2 mousePositionInWorld = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePositionInWorld = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (rb.velocity.x != 0 && moveHorizontal != 0)
         {
-            if (rb.velocity.x > 0.01)
-            {
-                m_SpriteRenderer.flipX = false;
-            }
-            if (rb.velocity.x < 0.01)
-            {
-                m_SpriteRenderer.flipX = true;
-            }
+            m_SpriteRenderer.flipX = (rb.velocity.x < 0.01);
         }
 
-
-        if(mouseDown){
-            if (mousePositionInWorld.x < transform.position.x){
-                m_SpriteRenderer.flipX = true;
-            }
-            else if (mousePositionInWorld.x > transform.position.x){
-                m_SpriteRenderer.flipX = false;
-            }
-        }
-    }
-
-    public void SmokeEffect()
-    {
-        if (moveHorizontal != 0)
-        {
-            m_SmokeFramesRemaining -= 1;
-
-            if (m_SmokeFramesRemaining <= 0 && m_SmokeParticlesPrefab != null)
-            {
-                Instantiate(
-                    m_SmokeParticlesPrefab,
-                    new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
-                    Quaternion.identity);
-
-                m_SmokeFramesRemaining = m_FramesBetweenSmoke;
-            }
-        }
-    }
-
-    private void GlideLogic()
-    {
-        if (movingToHook)
-        {
-            return;
-        }
-
-        if (glideFramesRemaining < maxGlideFrames)
-        {
-            displayGlideUI = true;
-        }
-        else
-        {
-            displayGlideUI = false;
-        }
-
-        if (glideButton && !glideDepleted) //set glide instance to trigger event that can be read by UIHandler
-        {
-            m_FeatherParticles?.StartParticleSystem();
-
-            m_Animator.SetBool("Gliding", true);
-
-            if (rb.velocity.y < -1)
-            {
-                float targetVelocityY = -2f;
-                float newVelocityY = Mathf.MoveTowards(rb.velocity.y, targetVelocityY, Time.deltaTime * 50f);
-                rb.velocity = new Vector2(rb.velocity.x, newVelocityY);
-            }
-
-            if (glideFramesRemaining % 200 == 0)
-            {
-                SoundManager.Instance.PlaySound(Sound.Flap, 2f);
-            }
-
-            glideFramesRemaining -= 1;
-
-            if (glideFramesRemaining <= 0)
-            {
-                glideDepleted = true;
-            }    
-        }
-        else
-        {
-            m_FeatherParticles?.StopParticleSystem();
-
-            m_Animator.SetBool("Gliding", false);
-
-            if (glideFramesRemaining < maxGlideFrames)
-            {
-                glideFramesRemaining += 1;
-                if (glideFramesRemaining >= maxGlideFrames)
-                {
-                    glideDepleted = false;
-                }
-            }
-        }
-    }
-
-    private void RecallLogic()
-    {
-        if (!movingToHook)
-        {
-            Hook hook = currentHook.GetComponent<Hook>();
-            if (hook.CanRecall())
-                DestroyGrapplingHook();
-        }
-        else if (touchingHook || currentHook.transform.position.y >= transform.position.y || softlocked)
-        {
-            DestroyGrapplingHook();
+        if (mouseDown){
+            m_SpriteRenderer.flipX = (mousePositionInWorld.x < transform.position.x);
         }
     }
 
     public void MoveToHook()
     {
         GameManager.Instance.ChangeCameraTarget(transform);
-        m_SpringJoint.connectedBody = currentHook.GetComponent<Rigidbody2D>();
+        springJoint.connectedBody = currentHook.GetComponent<Rigidbody2D>();
 
         movingToHook = true;
 

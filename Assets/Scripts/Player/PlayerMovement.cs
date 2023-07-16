@@ -7,8 +7,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private Player player;
+    private ControllerManager controllerManager;
 
-    public float maxSpeed = 15f;
     public float airSpeed = 30f;
     public float airControl = 10f;
     public bool extraControl = false;
@@ -23,17 +23,33 @@ public class PlayerMovement : MonoBehaviour
     public float clampInterval = 0.3f;
 
     public bool glideDepleted = false;
+    public bool useGlideOverride = false;
+    public bool glideOverride = false;
 
     public FeatherParticles featherParticles;
+
+    public GameObject smokeParticlesPrefab;
+    private int smokeFramesInterval = 10;
+    private int smokeFramesRemaining = 10;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         player = GetComponent<Player>();
+        controllerManager = FindObjectOfType<ControllerManager>();
     }
 
-    private void FixedUpdate()
+    public void MovementUpdate()
+    {
+        GlideLogic();
+        if (useGlideOverride)
+        {
+            animator.SetBool("Gliding", glideOverride);
+        }
+    }
+
+    public void MovementFixedUpdate()
     {
         ClampPlayerMovement();
         MovePlayer();
@@ -48,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Clamp speed
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -player.maxSpeed, player.maxSpeed), Mathf.Clamp(rb.velocity.y, -currentClamp, currentClamp));
 
         // If touching hook
         if (player.movingToHook && Vector2.Distance((Vector2)player.currentHook.transform.position, (Vector2)transform.position) < player.retriveHookDistance)
@@ -76,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Overwrite player velocity, IE snap turning
             rb.velocity = new Vector2(movement.x * speed, rb.velocity.y);
-            player.SmokeEffect();
+            SmokeEffect();
         }
 
         // Add more air control
@@ -130,6 +146,24 @@ public class PlayerMovement : MonoBehaviour
             {
                 player.glideFramesRemaining += 1;
                 glideDepleted = (player.glideFramesRemaining >= player.maxGlideFrames) ? false : glideDepleted;
+            }
+        }
+    }
+
+    private void SmokeEffect()
+    {
+        if (player.moveHorizontal != 0)
+        {
+            smokeFramesRemaining -= 1;
+
+            if (smokeFramesRemaining <= 0 && smokeParticlesPrefab != null)
+            {
+                Instantiate(
+                    smokeParticlesPrefab,
+                    new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z),
+                    Quaternion.identity);
+
+                smokeFramesRemaining = smokeFramesInterval;
             }
         }
     }
