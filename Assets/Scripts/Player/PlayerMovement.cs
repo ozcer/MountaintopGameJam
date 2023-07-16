@@ -43,10 +43,6 @@ public class PlayerMovement : MonoBehaviour
     public void MovementUpdate()
     {
         GlideLogic();
-        if (useGlideOverride)
-        {
-            animator.SetBool("Gliding", glideOverride);
-        }
     }
 
     public void MovementFixedUpdate()
@@ -147,6 +143,11 @@ public class PlayerMovement : MonoBehaviour
                 player.glideFramesRemaining += 1;
                 glideDepleted = (player.glideFramesRemaining >= player.maxGlideFrames) ? false : glideDepleted;
             }
+        }
+
+        if (useGlideOverride)
+        {
+            animator.SetBool("Gliding", glideOverride);
         }
     }
 
