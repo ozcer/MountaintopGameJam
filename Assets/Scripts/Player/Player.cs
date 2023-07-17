@@ -47,7 +47,10 @@ public class Player : MonoBehaviour
 
     public PauseMenu pauseMenu;
     private ControllerManager controllerManager;
-    
+
+    public bool setGameFPS = false;
+    public int gameFPS = 60;
+
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
@@ -60,6 +63,13 @@ public class Player : MonoBehaviour
         playerGrappling = GetComponent<PlayerGrappling>();
 
         originalPosition = transform.position;
+
+        if (setGameFPS)
+        {
+            QualitySettings.vSyncCount = 0;  // VSync must be disabled
+            Application.targetFrameRate = gameFPS;
+        }
+
     }
 
     private void Update()
