@@ -22,7 +22,6 @@ public class Hook : MonoBehaviour
     private float lastNonStickyHitTime = 0f;
     private float lastBouncyHitTime = 0f;
 
-    private Vector2 launchPosition;
 
 
     void Update()

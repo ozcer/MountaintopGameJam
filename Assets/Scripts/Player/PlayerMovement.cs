@@ -40,6 +40,10 @@ public class PlayerMovement : MonoBehaviour
     private int smokeFramesInterval = 10;
     private int smokeFramesRemaining = 10;
 
+    private float bouncyHitCooldown = 0.14f;
+    private float lastBouncyHitTime = 0f;
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -184,8 +188,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("BouncyWall"))
         {
-            SoundManager.Instance.PlaySound(Sound.BouncyHit);
             currentClamp = maxClamp;
+
+            if (Time.time - lastBouncyHitTime >= bouncyHitCooldown)
+            {
+                SoundManager.Instance.PlaySound(Sound.BouncyHit);
+                lastBouncyHitTime = Time.time;
+            }
         }
     }
 
