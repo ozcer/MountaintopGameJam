@@ -21,6 +21,9 @@ public class PlayerGrappling : MonoBehaviour
     private Vector2 aim;
     private Vector2 stickSave;
 
+    public bool hookAboveLaunchPosition;
+    private Vector2 launchPosition;
+
     private void Awake()
     {
         player = GetComponent<Player>();
@@ -49,6 +52,7 @@ public class PlayerGrappling : MonoBehaviour
             if (player.currentHook == null && hookPrefab)
             {
                 LaunchGrapplingHook(Mathf.Max(launchPower, launchPowerMin));
+                launchPosition = player.transform.position;
             }
             else
             {
@@ -146,6 +150,7 @@ public class PlayerGrappling : MonoBehaviour
         player.touchingHook = false;
         player.softlocked = false;
         player.softlockCheckCoroutineRunning = false;
+        hookAboveLaunchPosition = false;
     }
 
     private void RecallLogic()
@@ -156,9 +161,18 @@ public class PlayerGrappling : MonoBehaviour
             if (hook.CanRecall())
                 DestroyGrapplingHook();
         }
-        else if (player.touchingHook || player.currentHook.transform.position.y >= transform.position.y || player.softlocked)
+        else if (
+               player.touchingHook 
+            || player.currentHook.transform.position.y >= transform.position.y 
+            || player.softlocked
+            || hookAboveLaunchPosition)
         {
             DestroyGrapplingHook();
         }
+    }
+
+    public float ReturnLaunchHeight()
+    {
+        return launchPosition.y;
     }
 }
