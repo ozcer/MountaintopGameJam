@@ -17,6 +17,9 @@ GameObject:
   - component: {fileID: 2483760253099190232}
   - component: {fileID: 5089448226772966044}
   - component: {fileID: 6697710319076860796}
+  - component: {fileID: 4661947785033699566}
+  - component: {fileID: 2525705393210229869}
+  - component: {fileID: 5105401722261328619}
   m_Layer: 3
   m_Name: Player 1
   m_TagString: Player
@@ -106,41 +109,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f66e2aad0f0ec7a4c9d8f122af961513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationSelector: {fileID: 0}
-  m_HookPrefab: {fileID: 6260268016498765296, guid: 10bd883e2e237924abd8a2be80a4a8f3, type: 3}
-  airSpeed: 26
-  airControl: 10
-  extraControl: 0
-  speed: 10
-  m_MaxSpeed: 10
+  springJoint: {fileID: 0}
+  playerMovement: {fileID: 2525705393210229869}
+  playerGrappling: {fileID: 5105401722261328619}
+  animationSelector: {fileID: 2483760253099190232}
+  currentHook: {fileID: 0}
+  maxSpeed: 20
+  moveHorizontal: 0
+  movingToHook: 0
   retriveHookDistance: 2
-  platformLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  launchPowerMin: 0
-  launchPowerMax: 40
-  launchPowerIncrement: 0.1
-  maxGlideFrames: 1200
-  glideFramesRemaining: 0
-  glideDepleted: 0
-  gliding: 0
+  mouseDown: 0
+  mouseUp: 0
+  invertDirection: 0
   chargePercent: 0
-  chargeBar: {fileID: 3036257759101839527}
   displayGlideUI: 0
   displayChargeUI: 0
   softlocked: 0
   softlockCheckCoroutineRunning: 0
   touchingHook: 0
-  m_FeatherParticles: {fileID: 759935083995722037}
-  m_SmokeParticlesPrefab: {fileID: 1110095856321859318, guid: a4ee577a54473514fb11e18f9c066816, type: 3}
-  useGlideOverride: 0
-  glideOverride: 0
   groundScript: {fileID: 0}
-  currentClamp: 20
-  minClamp: 0
-  maxClamp: 0
-  clampInterval: 0
-  controllerManager: {fileID: 0}
+  stickAim: 0
+  pauseMenu: {fileID: 0}
 --- !u!50 &3045410546236556520
 Rigidbody2D:
   serializedVersion: 4
@@ -237,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5089448226772966044}
-  collider: {fileID: 3670732186631554954}
+  myCollider: {fileID: 0}
   rb: {fileID: 3045410546236556520}
   jumpForce: {x: 0, y: 10}
   raycastDistance: 0.1
@@ -281,6 +270,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrow: {fileID: 4084708696985420602}
+  player: {fileID: 0}
+--- !u!114 &4661947785033699566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950443999922929598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27d371e38b4e7774fb9ff3c585eeac57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundParticles: {fileID: 5615085080018806386, guid: b723074e2f06dc043a0ee5de047e33b1, type: 3}
+  ground: {fileID: 0}
+  woodColor: {r: 0.7264151, g: 0.39146328, b: 0.16903995, a: 1}
+  whiteColor: {r: 1, g: 1, b: 1, a: 1}
+  bounceColor: {r: 0.32576054, g: 0.6886792, b: 0.25771323, a: 1}
+--- !u!114 &2525705393210229869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950443999922929598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3031d12d56307cc4d885017492d01031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  airSpeed: 30
+  airControl: 10
+  extraControl: 0
+  speed: 12
+  minClamp: 16
+  maxClamp: 40
+  clampInterval: 0.3
+  maxGlideFrames: 1200
+  glideFramesRemaining: 0
+  glideButton: 0
+  glideFallSpeed: -3
+  glideDepleted: 0
+  useGlideOverride: 0
+  glideOverride: 0
+  featherParticles: {fileID: 0}
+  groundScript: {fileID: 0}
+  smokeParticlesPrefab: {fileID: 1110095856321859318, guid: a4ee577a54473514fb11e18f9c066816, type: 3}
+--- !u!114 &5105401722261328619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950443999922929598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 459cc605e73690b43ba9b2369a30d191, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookPrefab: {fileID: 6260268016498765296, guid: 10bd883e2e237924abd8a2be80a4a8f3, type: 3}
+  launchPowerMin: 10
+  launchPowerMax: 25
+  launchPowerIncrement: 0.14
+  chargeBar: {fileID: 3036257759101839527}
 --- !u!1 &2630388846195261171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1346,17 +1399,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cea31a7686c63cd479a18e58332f58b1, type: 3}
---- !u!114 &759935083995722037 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3371907308111101014, guid: cea31a7686c63cd479a18e58332f58b1, type: 3}
-  m_PrefabInstance: {fileID: 2612298041287937379}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e67e14f0f3bb684fb075fb4ca291ae8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &3816967520849136982 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1204757460355645493, guid: cea31a7686c63cd479a18e58332f58b1, type: 3}
