@@ -27,4 +27,7 @@ public class PauseMenu : MonoBehaviour
 
         gamePaused = true;
     }
+
+    //add button functions
+    //playerprefs for settings
 }

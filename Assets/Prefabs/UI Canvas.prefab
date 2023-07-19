@@ -552,6 +552,7 @@ MonoBehaviour:
   bulletTimeAmount: 100
   drainSpeed: 100
   refillSpeed: 20
+  playerMovement: {fileID: 0}
   timerText: {fileID: 1745597027897999879}
   distanceText: {fileID: 8695457617792977246}
   playerObject: {fileID: 0}
@@ -567,6 +568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28881f24286673849bb4937f75333b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamePaused: 0
   pauseCanvas: {fileID: 1751315584824935156}
 --- !u!1001 &874094772198556211
 PrefabInstance:
@@ -580,10 +582,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pause Screen
       objectReference: {fileID: 0}
-    - target: {fileID: 4053368228651063948, guid: 5c8aef7c77fbcb44796ee82ace8aa958, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 5909182155536509470}
     - target: {fileID: 8674064376678149887, guid: 5c8aef7c77fbcb44796ee82ace8aa958, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

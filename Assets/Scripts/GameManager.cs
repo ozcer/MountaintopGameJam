@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+//add enum for game state
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
