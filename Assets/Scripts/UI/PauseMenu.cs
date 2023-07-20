@@ -30,6 +30,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject gameplayCanvas;
     public Image gameplayIcon;
     public Sprite gameplaySelected, gameplayNotSelected;
+    public CanvasGroup gameplayOverlay;
 
     [Header("Mobile Tab")]
     public GameObject mobileCanvas;
@@ -108,6 +109,8 @@ public class PauseMenu : MonoBehaviour
     public void DisableOverlayToggle(bool toggleValue)
     {
         PlayerPrefs.SetInt("disableOverlay", toggleValue ? 1 : 0);
+        gameplayOverlay.alpha = toggleValue ? 0 : 1;
+
     }
 
     public void GlideToggle(bool toggleValue)
@@ -160,7 +163,4 @@ public class PauseMenu : MonoBehaviour
     {
         //reset position functionality here
     }
-
-    //add button functions
-    //playerprefs for settings
 }

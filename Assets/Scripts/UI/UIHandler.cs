@@ -45,7 +45,7 @@ public class UIHandler : MonoBehaviour
         lerpColor = Color.Lerp(arrowStart, arrowEnd, player.chargePercent);
         lerpColor.a = 1f;
 
-        if (player.displayChargeUI)
+        if (player.displayChargeUI && PlayerPrefs.GetInt("enableArrow", 1) >= 1)
         {
             chargeCG.gameObject.SetActive(true); //StartCoroutine(FadeCanvasCoroutine(chargeCG, 0.05f, true));
             arrow.color = lerpColor;
