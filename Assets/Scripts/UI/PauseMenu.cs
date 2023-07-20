@@ -34,6 +34,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject mobileCanvas;
     public Image mobileIcon;
     public Sprite mobileSelected, mobileNotSelected;
+    private const int ARROWS = 0, TOUCH = 0, JOYSTICK = 1;
 
     //[Header("Audio")]
     //public GameObject musicSlider, sfxSlider;
@@ -86,6 +87,7 @@ public class PauseMenu : MonoBehaviour
         gamePaused = true;
     }
 
+    //audio settings
     public void MusicValueUpdate(float sliderValue)
     {
         musicValue.text = "" + sliderValue;
@@ -96,6 +98,36 @@ public class PauseMenu : MonoBehaviour
     {
         sfxValue.text = "" + sliderValue;
         PlayerPrefs.SetFloat("sfxVolume", sliderValue);
+    }
+
+    //gameplay settings
+    public void InverseToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("inverseControls", toggleValue ? 1 : 0);
+    }
+
+    public void DisableOverlayToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("disableOverlay", toggleValue ? 1 : 0);
+    }
+
+    public void GlideToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("enableGlide", toggleValue ? 1 : 0);
+    }
+    public void ArrowToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("enableArrow", toggleValue ? 1 : 0);
+    }
+
+    //mobile settings
+    public void MobileMovementToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("mobileMovement", toggleValue ? ARROWS : JOYSTICK);
+    }
+    public void MobileGrappleToggle(bool toggleValue)
+    {
+        PlayerPrefs.SetInt("mobileGrapple", toggleValue ? TOUCH : JOYSTICK);
     }
 
     public void DisplayTab()
