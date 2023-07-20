@@ -20,6 +20,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject audioCanvas;
     public Image audioIcon;
     public Sprite audioSelected, audioNotSelected;
+    public AudioSource bgm;
 
     [Header("Audio Variables")]
     public TextMeshProUGUI musicValue;
@@ -35,9 +36,6 @@ public class PauseMenu : MonoBehaviour
     public Image mobileIcon;
     public Sprite mobileSelected, mobileNotSelected;
     private const int ARROWS = 0, TOUCH = 0, JOYSTICK = 1;
-
-    //[Header("Audio")]
-    //public GameObject musicSlider, sfxSlider;
 
     private void Awake()
     {
@@ -92,6 +90,7 @@ public class PauseMenu : MonoBehaviour
     {
         musicValue.text = "" + sliderValue;
         PlayerPrefs.SetFloat("musicVolume", sliderValue);
+        bgm.volume = 0.2f * (sliderValue / 10f);
     }
 
     public void SFXValueUpdate(float sliderValue)
