@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,10 @@ public class Player : MonoBehaviour
     public bool setGameFPS = false;
     public int gameFPS = 60;
 
+    public CinemachineVirtualCamera cam;
+    public float camZoomTime = .3f;
+
+
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
@@ -103,7 +108,37 @@ public class Player : MonoBehaviour
             Vector3 newPosition = transform.position + Vector3.up * 10f;
             transform.position = newPosition;
         }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (cam.m_Lens.OrthographicSize < 20)
+            {
+                StartCoroutine(ChangeOrthographicSize(30f, camZoomTime));
+            }
+            else
+            {
+                StartCoroutine(ChangeOrthographicSize(16f, camZoomTime));
+            }
+        }
     }
+
+    private IEnumerator ChangeOrthographicSize(float targetSize, float duration)
+    {
+        float initialSize = cam.m_Lens.OrthographicSize;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float newSize = Mathf.Lerp(initialSize, targetSize, elapsedTime / duration);
+            cam.m_Lens.OrthographicSize = newSize;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        cam.m_Lens.OrthographicSize = targetSize;
+    }
+
 
     private void FaceMouse()
     {
