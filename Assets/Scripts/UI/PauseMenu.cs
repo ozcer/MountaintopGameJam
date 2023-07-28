@@ -42,6 +42,10 @@ public class PauseMenu : MonoBehaviour
     {
         DisplayTab();
 
+        //load settings
+        if (bgm != null) bgm.volume = 0.2f * (PlayerPrefs.GetFloat("musicVolume") / 10f);
+        if (gameplayOverlay != null) gameplayOverlay.alpha = 1f - (float) PlayerPrefs.GetInt("disableOverlay");
+
         if (Input.touchSupported)
         {
             Debug.Log("Touch Supported " + mobileTabs.transform.GetChild(0).GetChildren().Count);
@@ -91,7 +95,7 @@ public class PauseMenu : MonoBehaviour
     {
         musicValue.text = "" + sliderValue;
         PlayerPrefs.SetFloat("musicVolume", sliderValue);
-        bgm.volume = 0.2f * (sliderValue / 10f);
+        if(bgm != null) bgm.volume = 0.2f * (sliderValue / 10f);
     }
 
     public void SFXValueUpdate(float sliderValue)
@@ -109,8 +113,7 @@ public class PauseMenu : MonoBehaviour
     public void DisableOverlayToggle(bool toggleValue)
     {
         PlayerPrefs.SetInt("disableOverlay", toggleValue ? 1 : 0);
-        gameplayOverlay.alpha = toggleValue ? 0 : 1;
-
+        if(gameplayOverlay != null) gameplayOverlay.alpha = toggleValue ? 0 : 1;
     }
 
     public void GlideToggle(bool toggleValue)

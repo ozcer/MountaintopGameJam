@@ -129,7 +129,7 @@ MonoBehaviour:
   touchingHook: 0
   groundScript: {fileID: 0}
   stickAim: 0
-  pauseMenu: {fileID: 0}
+  pauseMenu: {fileID: 6176191470995595423}
   setGameFPS: 0
   gameFPS: 60
   cam: {fileID: 0}
@@ -1482,6 +1482,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+--- !u!114 &6176191470995595423 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5130495677398637159, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+  m_PrefabInstance: {fileID: 1334494619944663800}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28881f24286673849bb4937f75333b5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!225 &7015006221297019525 stripped
 CanvasGroup:
   m_CorrespondingSourceObject: {fileID: 8349494716079329405, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
