@@ -132,6 +132,8 @@ MonoBehaviour:
   pauseMenu: {fileID: 0}
   setGameFPS: 0
   gameFPS: 60
+  cam: {fileID: 0}
+  camZoomTime: 0.3
 --- !u!50 &3045410546236556520
 Rigidbody2D:
   serializedVersion: 4
@@ -1258,6 +1260,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5130495677398637159, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+      propertyPath: gameplayOverlay
+      value: 
+      objectReference: {fileID: 7015006221297019525}
     - target: {fileID: 6165966914630985164, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1476,6 +1482,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+--- !u!225 &7015006221297019525 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 8349494716079329405, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
+  m_PrefabInstance: {fileID: 1334494619944663800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7551268804940652453 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8813101578325157213, guid: 8b8c2a748d8192343a62760a0aee4088, type: 3}
