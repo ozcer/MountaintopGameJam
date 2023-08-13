@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class TitleDuck : MonoBehaviour
 {
-    public EventSystem eventSystem;
-
     public float bobDuration = 1f;
     public float bobHeight = 10f;
     public LeanTweenType bobEase = LeanTweenType.easeInOutSine;
