@@ -402,7 +402,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8719029931406154432}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5409463286107084884}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: DisplayAudioTab
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &681197030739032874
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,7 +671,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: DisplayAudioTab
         m_Mode: 1
@@ -1160,6 +1172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8674064376678149887}
   - component: {fileID: 8525769409500072373}
+  - component: {fileID: 5409463286107084884}
   m_Layer: 5
   m_Name: Pause Screen
   m_TagString: Untagged
@@ -1207,6 +1220,38 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &5409463286107084884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471697064188657863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28881f24286673849bb4937f75333b5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gamePaused: 0
+  pauseCanvas: {fileID: 1471697064188657863}
+  desktopTabs: {fileID: 8804472997684219682}
+  mobileTabs: {fileID: 3243124044640627618}
+  audioCanvas: {fileID: 1209256595067695138}
+  audioIcon: {fileID: 3044532662187853780}
+  audioSelected: {fileID: 21300000, guid: 6137062ef05c26245877479c3bb1dcc0, type: 3}
+  audioNotSelected: {fileID: 21300000, guid: befa4c84142dcd94f8ded48274752615, type: 3}
+  bgm: {fileID: 0}
+  musicValue: {fileID: 5507347715771262166}
+  sfxValue: {fileID: 8395848743386932155}
+  gameplayCanvas: {fileID: 1353700735567568083}
+  gameplayIcon: {fileID: 2922427980217562037}
+  gameplaySelected: {fileID: 21300000, guid: 7e8144927fef7f8438ea769da5c9976d, type: 3}
+  gameplayNotSelected: {fileID: 21300000, guid: e2382ff11d9d88f45bef0e7522e9627a, type: 3}
+  gameplayOverlay: {fileID: 0}
+  mobileCanvas: {fileID: 5670176382675477302}
+  mobileIcon: {fileID: 1320083186226742551}
+  mobileSelected: {fileID: 21300000, guid: 95510d75f2ca7064cb1eda44279c9b8d, type: 3}
+  mobileNotSelected: {fileID: 21300000, guid: ccf4377ef63292b4e9b0e5e311991209, type: 3}
 --- !u!1 &1582748776099373029
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,7 +1337,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: ArrowToggle
         m_Mode: 0
@@ -1427,7 +1472,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: MobileMovementToggle
         m_Mode: 0
@@ -2182,7 +2227,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: DisplayGameplayTab
         m_Mode: 1
@@ -3464,7 +3509,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: SFXValueUpdate
         m_Mode: 0
@@ -4372,7 +4417,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8883780893364230660}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5409463286107084884}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: DisplayGameplayTab
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5268365957433049496
 GameObject:
   m_ObjectHideFlags: 0
@@ -4560,7 +4617,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: MobileGrappleToggle
         m_Mode: 0
@@ -5085,7 +5142,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: ResumeGame
         m_Mode: 1
@@ -5301,7 +5358,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: MusicValueUpdate
         m_Mode: 0
@@ -5609,7 +5666,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: GlideToggle
         m_Mode: 0
@@ -6413,7 +6470,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: ResetPosition
         m_Mode: 1
@@ -6547,7 +6604,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: DisableOverlayToggle
         m_Mode: 0
@@ -6782,7 +6839,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5409463286107084884}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
         m_MethodName: InverseToggle
         m_Mode: 0
@@ -6915,7 +6972,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1320083186226742551}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5409463286107084884}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: DisplayMobileTab
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9182842751624874811
 GameObject:
   m_ObjectHideFlags: 0

@@ -82,16 +82,16 @@ public class Player : MonoBehaviour
         CheatCodes();
         FaceMouse();
 
-        playerMovement.MovementUpdate();
-        playerGrappling.GrapplingUpdate();
+        playerMovement?.MovementUpdate();
+        playerGrappling?.GrapplingUpdate();
     }
 
     private void FixedUpdate()
     {
-        moveHorizontal = controllerManager.moveInputVector.x;
+        if(controllerManager != null) moveHorizontal = controllerManager.moveInputVector.x;
 
-        playerMovement.MovementFixedUpdate();
-        playerGrappling.GrapplingFixedUpdate();
+        playerMovement?.MovementFixedUpdate();
+        playerGrappling?.GrapplingFixedUpdate();
     }
 
     private void CheatCodes()

@@ -6,15 +6,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TitleDuck : MonoBehaviour
+public class TransitionBehaviour : MonoBehaviour
 {
-    public float bobDuration = 1f;
-    public float bobHeight = 10f;
-    public LeanTweenType bobEase = LeanTweenType.easeInOutSine;
-    
-    public float finalZ = -2f;
-    public float finalZDuration = 5f;
-    public LeanTweenType finalZEase = LeanTweenType.easeInOutSine;
+    //lead-in completion
+    bool leadInComplete;
 
     //button animation
     public CanvasGroup overlayObjects;
@@ -26,26 +21,24 @@ public class TitleDuck : MonoBehaviour
     public LeanTweenType curtainFadeEase = LeanTweenType.easeInOutSine;
 
     //play quack animation on mouse up
-    public Player player;
     public Animator anim;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        if(player == null) player = GetComponent<Player>();
-
-        LeanTween.moveY(gameObject, transform.position.y + bobHeight, bobDuration).setLoopPingPong().setEase(bobEase);
-        LeanTween.moveZ(gameObject, finalZ, finalZDuration).setEase(finalZEase);
+        leadInComplete = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //play charge animation
-        if (Input.GetMouseButtonDown(0)) anim.SetBool("Charging", true);
-        if (Input.GetMouseButtonUp(0)) anim.SetBool("Charging", false);
+        if (leadInComplete) //play charge animation
+        {
+            if (Input.GetMouseButtonDown(0)) anim.SetBool("Charging", true);
+            if (Input.GetMouseButtonUp(0)) anim.SetBool("Charging", false);
+        }
     }
-    
+
     //buttons slide in (leantween) before LoadNextScene
     public void ShowOptionsMenu()
     {
@@ -61,6 +54,12 @@ public class TitleDuck : MonoBehaviour
     {
         LeanTween.alphaCanvas(overlayObjects, 0f, overlayObjectsFadeDuration).setEase(overlayObjectsFadeEase);
         LeanTween.alpha(curtain.rectTransform, 1f, curtainFadeDuration).setEase(curtainFadeEase).setOnComplete(LoadNextScene); //change to work on button press instead
+    }
+
+    public void setLeadInComplete()
+    {
+        leadInComplete = true;
+        //Debug.Log("lead in done");
     }
 
     void LoadNextScene()
